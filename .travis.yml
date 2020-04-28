@@ -17,4 +17,4 @@ services:
 
 before_script:
   - psql -c "CREATE DATABASE \"$DB_NAME_TEST\";" -U postgres
-  - npx sequelize db:migrate
+  - npm run migrations-test
