@@ -7,8 +7,13 @@ exports.getRandom = () => {
   return axios
     .get(endpoint)
     .then(response => response.data.joke)
-    .catch(error => {
-      if (!error.response) return errors.serviceError('Can not get a response from Geek Jokes API');
-      return errors.serviceError(`Geek Jokes API reponds with ${error.response.status}`);
-    });
+    .catch(error =>
+      Promise.reject(
+        errors.serviceError(
+          error.response
+            ? `Geek Jokes API reponds with ${error.response.status}`
+            : 'Can not get a response from Geek Jokes API'
+        )
+      )
+    );
 };

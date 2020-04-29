@@ -7,7 +7,7 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "console": "node console.js",
+    "console": "node --experimental-repl-await console.js",
     "cover": "npm run test -- --coverage",
     "test": "NODE_ENV=testing jest --runInBand --forceExit --detectOpenHandles --passWithNoTests",
     "test-inspect": "NODE_ENV=testing node --inspect --debug-brk jest",
