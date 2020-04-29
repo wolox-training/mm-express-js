@@ -1,10 +1,12 @@
 language: node_js
 
+node_js:
+  - "12.16.2"
+
 sudo: true
 
 env:
-  - CXX=g++-4.8 NODE_ENV=testing DB_NAME_TEST=db_mmexpress-js_test
-
+  - CXX=g++-4.8 NODE_ENV=testing
 addons:
   apt:
     sources:
@@ -16,5 +18,5 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE \"$DB_NAME_TEST\";" -U postgres
+  - psql -c "CREATE DATABASE bookstest;" -U postgres
   - npm run migrations-test
