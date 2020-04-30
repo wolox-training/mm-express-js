@@ -8,3 +8,5 @@ const camelizeValue = value => {
 
 exports.deepCamelizeKeys = object =>
   _.reduce(object, (result, value, key) => ({ ...result, [_.camelCase(key)]: camelizeValue(value) }), {});
+
+exports.underscoreKeys = object => _.mapKeys(object, (value, key) => _.snakeCase(key));
