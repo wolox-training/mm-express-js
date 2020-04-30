@@ -7,7 +7,7 @@ const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500,
   [errors.EXTERNAL_SERVICE_ERROR]: 502,
-  [errors.VALIDATION_ERROR]: 422
+  [errors.FIELD_VALIDATION_ERROR]: 422
 };
 
 exports.handle = (error, req, res, next) => {
