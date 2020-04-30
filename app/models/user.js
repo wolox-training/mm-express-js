@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
-    'users',
+    'User',
     {
       firstName: {
         type: DataTypes.STRING,
@@ -13,20 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true
-        }
+        unique: true
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false
       }
     },
-    { underscored: true }
+    { underscored: true, tableName: 'users' }
   );
-  User.associate = () => {
-    // associations can be defined here
-  };
   return User;
 };
