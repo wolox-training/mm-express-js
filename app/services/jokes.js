@@ -1,7 +1,5 @@
 const axios = require('axios');
-const {
-  logger: { info }
-} = require('express-wolox-logger');
+const { info } = require('../logger');
 
 const { externalServiceError } = require('../errors');
 const {
