@@ -1,8 +1,8 @@
 const { body, validationResult } = require('express-validator');
 
-const users = require('../services/users');
+const { createUser } = require('../services/users');
 const { fieldValidationError } = require('../errors');
-const { creationsParamsMapper } = require('../mappers/users');
+const { creationParamsMapper } = require('../mappers/users');
 const { showSerializer } = require('../serializers/users');
 
 exports.create = [
@@ -20,9 +20,8 @@ exports.create = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) throw fieldValidationError(errors.mapped());
 
-    const userBody = creationsParamsMapper(req.body.user);
-    users
-      .create(userBody)
+    const userBody = creationParamsMapper(req.body.user);
+    createUser(userBody)
       .then(user => res.status(201).send(showSerializer(user)))
       .catch(next);
   }
