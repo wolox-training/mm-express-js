@@ -1,9 +1,11 @@
 const axios = require('axios');
 
 const { externalServiceError } = require('../errors');
-const config = require('../../config');
-
-const { baseUrl } = config.common.geekJokesApi;
+const {
+  common: {
+    geekJokesApi: { baseUrl }
+  }
+} = require('../../config');
 
 exports.getRandomJoke = () =>
   axios
