@@ -2,8 +2,12 @@ const { validationResult } = require('express-validator');
 
 const { fieldValidationError } = require('../errors');
 
-exports.fieldErrorsValidation = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) throw fieldValidationError(errors.mapped());
-  next();
+exports.fieldErrorsValidation = validations => (req, res, next) => {
+  Promise.all(validations.map(validation => validation.run(req)))
+    .then(() => {
+      const errors = validationResult(req);
+      if (errors.isEmpty()) return next();
+      throw fieldValidationError(errors.mapped());
+    })
+    .catch(next);
 };
