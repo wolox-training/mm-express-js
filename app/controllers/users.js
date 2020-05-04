@@ -1,11 +1,11 @@
-const { body, validationResult } = require('express-validator');
+const { body } = require('express-validator');
 
 const { createUser } = require('../services/users');
-const { fieldValidationError } = require('../errors');
 const { creationParamsMapper } = require('../mappers/users');
 const { showSerializer } = require('../serializers/users');
+const { fieldErrorsValidation } = require('../middlewares/fieldErrors');
 
-exports.create = [
+exports.createUser = [
   body('user.first_name', 'first_name must be present')
     .not()
     .isEmpty(),
@@ -16,12 +16,9 @@ exports.create = [
     .not()
     .isEmpty(),
   body('user.email', 'email must have email format').isEmail(),
+  fieldErrorsValidation,
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) throw fieldValidationError(errors.mapped());
-
-    const userBody = creationParamsMapper(req.body.user);
-    createUser(userBody)
+    createUser(creationParamsMapper(req.body.user))
       .then(user => res.status(201).send(showSerializer(user)))
       .catch(next);
   }
