@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { info } = require('../logger');
 
 const { externalServiceError } = require('../errors');
 const {
@@ -7,11 +8,12 @@ const {
   }
 } = require('../../config');
 
-exports.getRandomJoke = () =>
-  axios
+exports.getRandomJoke = () => {
+  info('Calling jokesService.getRandomJoke');
+  return axios
     .get(baseUrl)
     .then(response => {
-      if (response.data) return response.data.joke;
+      if (response.data && response.data.joke) return response.data.joke;
       throw externalServiceError('Geek Jokes responds with an invalid body');
     })
     .catch(error => {
@@ -21,3 +23,4 @@ exports.getRandomJoke = () =>
           : 'Can not get a response from Geek Jokes API'
       );
     });
+};
