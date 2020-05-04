@@ -1,7 +1,8 @@
 const { healthCheck } = require('./controllers/healthCheck');
 const { createUser } = require('./controllers/users');
+const { userBodyValidations } = require('./middlewares/users');
 
 exports.init = app => {
   app.get('/health', healthCheck);
-  app.post('/users', createUser);
+  app.post('/users', userBodyValidations, createUser);
 };
