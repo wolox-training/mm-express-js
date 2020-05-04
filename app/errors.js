@@ -14,7 +14,3 @@ exports.externalServiceError = message => internalError(message, exports.EXTERNA
 
 exports.FIELD_VALIDATION_ERROR = 'field_validation_error';
 exports.fieldValidationError = message => internalError(message, exports.FIELD_VALIDATION_ERROR);
-exports.sequelizeValidationError = sequelizeError => {
-  const message = sequelizeError.errors.map(error => error.message).join(', ');
-  return internalError(message, exports.FIELD_VALIDATION_ERROR);
-};

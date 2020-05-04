@@ -1,9 +1,10 @@
 const { body } = require('express-validator');
 
-const { createUser } = require('../services/users');
+const { createUser, findUserByEmail } = require('../services/users');
 const { creationParamsMapper } = require('../mappers/users');
 const { showSerializer } = require('../serializers/users');
 const { fieldErrorsValidation } = require('../middlewares/fieldErrors');
+const { hashPassword } = require('../helpers/passwords');
 
 exports.createUser = [
   body('user.first_name', 'first_name must be present')
@@ -15,10 +16,19 @@ exports.createUser = [
   body('user.password', 'password must be present')
     .not()
     .isEmpty(),
-  body('user.email', 'email must have email format').isEmail(),
+  body('user.email')
+    .isEmail()
+    .withMessage('email must have email format')
+    .bail()
+    .custom(async email => {
+      const user = await findUserByEmail(email);
+      if (user) throw new Error('E-mail already in use');
+    }),
   fieldErrorsValidation,
   (req, res, next) => {
-    createUser(creationParamsMapper(req.body.user))
+    const userBody = creationParamsMapper(req.body.user);
+    hashPassword(userBody.password)
+      .then(password => createUser({ ...userBody, password }))
       .then(user => res.status(201).send(showSerializer(user)))
       .catch(next);
   }
