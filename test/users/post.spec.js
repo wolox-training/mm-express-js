@@ -11,7 +11,7 @@ describe('POST /users', () => {
       .post('/users')
       .send(params);
 
-  describe('when everything is OK', () => {
+  describe('when params are OK', () => {
     const userParams = buildUserJson();
 
     test('Responds with 201 status code', () =>
