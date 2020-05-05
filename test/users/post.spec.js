@@ -1,9 +1,9 @@
 const request = require('supertest');
-const { factory } = require('factory-girl');
 const _ = require('lodash');
 
 const app = require('../../app');
-require('../factory/factory_by_models').factoryByModel('User');
+const { createUser, buildUserJson } = require('../factory/users_factory');
+const { FIELD_VALIDATION_ERROR, userEmailRepeatedError } = require('../../app/errors');
 
 describe('POST /users', () => {
   const httpRequest = params =>
@@ -12,18 +12,13 @@ describe('POST /users', () => {
       .send(params);
 
   describe('when everything is OK', () => {
-    const userParams = {
-      first_name: 'Tincho',
-      last_name: 'Mallea',
-      password: 'mypass123',
-      email: 'martin.mallea@fake.com'
-    };
+    const userParams = buildUserJson();
 
     test('Responds with 201 status code', () =>
-      httpRequest(userParams).then(response => expect(response.statusCode).toBe(201)));
+      userParams.then(httpRequest).then(response => expect(response.statusCode).toBe(201)));
 
     test('Responds with the expected body', () =>
-      httpRequest(userParams).then(response =>
+      userParams.then(httpRequest).then(response =>
         expect(response.body).toMatchObject({
           ..._.pick(userParams, 'first_name', 'last_name', 'email'),
           id: expect.any(Number)
@@ -36,21 +31,26 @@ describe('POST /users', () => {
 
     test('Responds with 422 status code', () =>
       httpRequest(userParams).then(response => expect(response.statusCode).toBe(422)));
+
+    test('Responds with the expected error code', () =>
+      httpRequest(userParams).then(response =>
+        expect(response.body.internal_code).toBe(FIELD_VALIDATION_ERROR)
+      ));
   });
 
   describe('when email is already used', () => {
     const email = 'some_email@mail.com';
-    const userParams = {
-      first_name: 'Tincho',
-      last_name: 'Mallea',
-      password: 'mypass123',
-      email
-    };
-    beforeAll(() => {
-      factory.create('User', { email });
-    });
+    const userParams = buildUserJson({ email });
+    beforeEach(() => createUser({ email }));
 
     test('Responds with 422 status code', () =>
-      httpRequest(userParams).then(response => expect(response.statusCode).toBe(422)));
+      userParams.then(httpRequest).then(response => expect(response.statusCode).toBe(422)));
+
+    test('Responds with the expected error', () =>
+      userParams
+        .then(httpRequest)
+        .then(response =>
+          expect(response.body).toMatchObject(userEmailRepeatedError('E-mail already in use'))
+        ));
   });
 });
