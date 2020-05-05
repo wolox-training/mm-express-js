@@ -4,16 +4,16 @@ const { fieldErrorsValidation } = require('./fieldErrors');
 const { findUserByEmail } = require('../services/users');
 
 exports.userBodyValidations = fieldErrorsValidation([
-  body('user.first_name', 'first_name must be present')
+  body('first_name', 'first_name must be present')
     .not()
     .isEmpty(),
-  body('user.last_name', 'last_name must be present')
+  body('last_name', 'last_name must be present')
     .not()
     .isEmpty(),
-  body('user.password', 'password must be present')
+  body('password', 'password must be present')
     .not()
     .isEmpty(),
-  body('user.email')
+  body('email')
     .isEmail()
     .withMessage('email must have email format')
     .bail()

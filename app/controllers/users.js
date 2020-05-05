@@ -4,7 +4,7 @@ const { showSerializer } = require('../serializers/users');
 const { hashPassword } = require('../helpers/passwords');
 
 exports.createUser = (req, res, next) => {
-  const userBody = creationParamsMapper(req.body.user);
+  const userBody = creationParamsMapper(req.body);
   hashPassword(userBody.password)
     .then(password => createUser({ ...userBody, password }))
     .then(user => res.status(201).send(showSerializer(user)))
