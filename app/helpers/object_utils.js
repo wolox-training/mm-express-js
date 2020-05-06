@@ -13,4 +13,6 @@ exports.deepCamelizeKeys = object => exports.deepMapKeys(object, _.camelCase);
 
 exports.deepUnderscoreKeys = object => exports.deepMapKeys(object, _.snakeCase);
 
+exports.camelizeKeys = object => _.mapKeys(object, (value, key) => _.camelCase(key));
+
 exports.underscoreKeys = object => _.mapKeys(object, (value, key) => _.snakeCase(key));

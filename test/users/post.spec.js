@@ -4,7 +4,8 @@ const _ = require('lodash');
 const app = require('../../app');
 const { createUser, buildUserJson } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, userEmailRepeatedError } = require('../../app/errors');
-const { underscoreKeys } = require('../../app/helpers/object_utils');
+const { underscoreKeys, camelizeKeys } = require('../../app/helpers/object_utils');
+const { User } = require('../../app/models');
 
 describe('POST /users', () => {
   const httpRequest = params =>
@@ -25,6 +26,13 @@ describe('POST /users', () => {
           id: expect.any(Number)
         })
       ));
+
+    test('Creates the returned user', () =>
+      userParams
+        .then(httpRequest)
+        .then(response =>
+          expect(User.findByPk(response.body.id)).resolves.toMatchObject(camelizeKeys(response.body))
+        ));
   });
 
   describe('without mandatory parameters', () => {
@@ -37,6 +45,9 @@ describe('POST /users', () => {
       httpRequest(userParams).then(response =>
         expect(response.body.internal_code).toBe(FIELD_VALIDATION_ERROR)
       ));
+
+    test('Does not create a new user', () =>
+      httpRequest(userParams).then(() => expect(User.count()).resolves.toBe(0)));
   });
 
   describe('when email is already used', () => {
@@ -53,5 +64,8 @@ describe('POST /users', () => {
         .then(response =>
           expect(response.body).toMatchObject(underscoreKeys(userEmailRepeatedError('E-mail already in use')))
         ));
+
+    test('Does not create a new user', () =>
+      httpRequest(userParams).then(() => expect(User.count()).resolves.toBe(1)));
   });
 });
