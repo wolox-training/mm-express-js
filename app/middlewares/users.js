@@ -1,14 +1,10 @@
 const { body } = require('express-validator');
 
-const { fieldErrorsValidation } = require('./field_errors');
+const { fieldsValidation } = require('./fields_validation');
 const { findUserByEmail } = require('../services/users');
+const { fieldValidationError } = require('../errors');
 
-const validateEmailUniqueness = async email => {
-  const user = await findUserByEmail(email);
-  if (user) throw new Error('E-mail already in use');
-};
-
-exports.userBodyValidations = fieldErrorsValidation([
+exports.userBodyValidations = fieldsValidation([
   body('first_name', 'first_name must be present')
     .not()
     .isEmpty(),
@@ -18,9 +14,13 @@ exports.userBodyValidations = fieldErrorsValidation([
   body('password', 'password must be present')
     .not()
     .isEmpty(),
-  body('email')
-    .isEmail()
-    .withMessage('email must have email format')
-    .bail()
-    .custom(validateEmailUniqueness)
+  body('email', 'email must have email format').isEmail()
 ]);
+
+exports.validateEmailUniqueness = (req, res, next) =>
+  findUserByEmail(req.body.email)
+    .then(user => {
+      if (user) return next(fieldValidationError('E-mail already in use'));
+      return next();
+    })
+    .catch(next);

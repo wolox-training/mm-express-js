@@ -1,12 +1,12 @@
 const { createUser } = require('../services/users');
 const { creationParamsMapper } = require('../mappers/users');
-const { showSerializer } = require('../serializers/users');
+const { showUserSerializer } = require('../serializers/users');
 const { hashPassword } = require('../helpers/passwords');
 
 exports.createUser = (req, res, next) => {
   const userBody = creationParamsMapper(req.body);
-  hashPassword(userBody.password)
+  return hashPassword(userBody.password)
     .then(password => createUser({ ...userBody, password }))
-    .then(user => res.status(201).send(showSerializer(user)))
+    .then(user => res.status(201).send(showUserSerializer(user)))
     .catch(next);
 };
