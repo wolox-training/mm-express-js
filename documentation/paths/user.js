@@ -33,9 +33,21 @@ module.exports = {
               schema: {
                 $ref: '#/components/schemas/Error'
               },
-              example: {
-                message: 'first_name must be present; E-mail already in use',
-                internal_code: 'field_validation_error'
+              examples: {
+                field_validation_error: {
+                  summary: 'Field validation error',
+                  value: {
+                    message: 'first_name must be present',
+                    internal_code: 'field_validation_error'
+                  }
+                },
+                user_email_repeated_error: {
+                  summary: 'E-mail already in use error',
+                  value: {
+                    message: 'E-mail already in use',
+                    internal_code: 'user_email_repeated_error'
+                  }
+                }
               }
             }
           }
