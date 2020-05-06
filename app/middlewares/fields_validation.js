@@ -8,8 +8,8 @@ const buildErrorMessage = errors =>
     .map(error => error.msg)
     .join('; ');
 
-exports.fieldsValidation = validations => (req, res, next) => {
-  Promise.all(validations.map(validation => validation.run(req)))
+exports.fieldsValidation = (...validations) => (req, res, next) => {
+  Promise.all(validations.flat().map(validation => validation.run(req)))
     .then(() => {
       const errors = validationResult(req);
       if (errors.isEmpty()) return next();
