@@ -10,7 +10,7 @@
     "console": "node --experimental-repl-await console.js",
     "cover": "npm run test -- --coverage",
     "test": "NODE_ENV=testing jest --runInBand --forceExit --detectOpenHandles --passWithNoTests",
-    "test-inspect": "NODE_ENV=testing node --inspect-brk node_modules/.bin/jest",
+    "test-inspect": "NODE_ENV=testing node --inspect-brk node_modules/.bin/jest --runInBand",
     "eslint-check": "eslint --print-config .eslintrc.js --ignore-pattern ./.eslintrc.js | eslint-config-prettier-check",
     "lint": "eslint \"**/*.js\" --ignore-pattern ./.eslintrc.js",
     "lint-diff": "git diff --diff-filter=ACM --name-only --cached --relative | grep \\\\.js$ | xargs eslint",

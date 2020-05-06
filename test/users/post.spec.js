@@ -4,6 +4,7 @@ const _ = require('lodash');
 const app = require('../../app');
 const { createUser, buildUserJson } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, userEmailRepeatedError } = require('../../app/errors');
+const { underscoreKeys } = require('../../app/helpers/object_utils');
 
 describe('POST /users', () => {
   const httpRequest = params =>
@@ -50,7 +51,7 @@ describe('POST /users', () => {
       userParams
         .then(httpRequest)
         .then(response =>
-          expect(response.body).toMatchObject(userEmailRepeatedError('E-mail already in use'))
+          expect(response.body).toMatchObject(underscoreKeys(userEmailRepeatedError('E-mail already in use')))
         ));
   });
 });
