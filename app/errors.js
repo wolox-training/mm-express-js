@@ -17,3 +17,6 @@ exports.fieldValidationError = message => internalError(message, exports.FIELD_V
 
 exports.USER_EMAIL_REPEATED_ERROR = 'user_email_repeated_error';
 exports.userEmailRepeatedError = message => internalError(message, exports.USER_EMAIL_REPEATED_ERROR);
+
+exports.INVALID_LOGIN_ERROR = 'invalid_login_error';
+exports.invalidLoginError = message => internalError(message, exports.INVALID_LOGIN_ERROR);
