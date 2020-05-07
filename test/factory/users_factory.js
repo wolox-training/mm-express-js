@@ -9,10 +9,12 @@ factoryByModel(modelName);
 
 const generateEmail = () => factory.seq('User.email', n => `user${n}@wolox.com.ar`);
 
+const buildDefaultAttrs = params => ({ ...params, email: params.email || generateEmail() });
+
 exports.createUser = (defaultAttrs = {}, buildOptions = {}) =>
-  factory.create(modelName, { ...defaultAttrs, email: defaultAttrs.email || generateEmail() }, buildOptions);
+  factory.create(modelName, buildDefaultAttrs(defaultAttrs), buildOptions);
 
 exports.buildUserJson = (defaultAttrs = {}, buildOptions = {}) =>
   factory
-    .attrs(modelName, defaultAttrs, buildOptions)
+    .attrs(modelName, buildDefaultAttrs(defaultAttrs), buildOptions)
     .then(attrs => deepUnderscoreKeys(_.omit(attrs, 'createdAt', 'updatedAt')));
