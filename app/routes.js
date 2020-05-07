@@ -1,5 +1,7 @@
 const { healthCheck } = require('./controllers/healthCheck');
-const { createUser, createSession } = require('./controllers/users');
+const { createUser } = require('./controllers/users');
+const { createSession } = require('./controllers/sessions');
+
 const {
   userBodyValidations,
   validateUserEmailUniqueness,
