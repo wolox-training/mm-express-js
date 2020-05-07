@@ -1,12 +1,8 @@
 const { healthCheck } = require('./controllers/healthCheck');
 const { createUser } = require('./controllers/users');
 const { createSession } = require('./controllers/sessions');
-
-const {
-  userBodyValidations,
-  validateUserEmailUniqueness,
-  sessionsBodyValidations
-} = require('./middlewares/users');
+const { userBodyValidations, validateUserEmailUniqueness } = require('./middlewares/users');
+const { sessionsBodyValidations } = require('./middlewares/sessions');
 
 exports.init = app => {
   app.get('/health', healthCheck);
