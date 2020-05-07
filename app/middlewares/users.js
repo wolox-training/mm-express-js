@@ -19,8 +19,5 @@ exports.userBodyValidations = fieldsValidation([
 
 exports.validateUserEmailUniqueness = (req, res, next) =>
   findUserByEmail(req.body.email)
-    .then(user => {
-      if (user) return next(userEmailRepeatedError('E-mail already in use'));
-      return next();
-    })
+    .then(user => (user ? next(userEmailRepeatedError('E-mail already in use')) : next()))
     .catch(next);
