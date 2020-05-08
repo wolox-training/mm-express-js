@@ -1,35 +1,7 @@
 module.exports = {
   '/users': {
-    get: {
-      tags: ['CRUD operations'],
-      description: 'Get users',
-      operationId: 'getUsers',
-      parameters: [
-        {
-          name: 'page',
-          in: 'query',
-          schema: {
-            type: 'integer',
-            default: 1
-          },
-          required: false
-        }
-      ],
-      responses: {
-        200: {
-          description: 'Users were obtained',
-          content: {
-            'application/json': {
-              schema: {
-                $ref: '#/components/schemas/Users'
-              }
-            }
-          }
-        }
-      }
-    },
     post: {
-      tags: ['CRUD operations'],
+      tags: ['Users'],
       description: 'Create user',
       operationId: 'createUser',
       parameters: [],
@@ -37,26 +9,45 @@ module.exports = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserCreationBody'
             }
           }
         },
         required: true
       },
       responses: {
-        200: {
-          description: 'New user was created'
+        201: {
+          description: 'New user was created',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/User'
+              }
+            }
+          }
         },
-        400: {
+        422: {
           description: 'Invalid parameters',
           content: {
             'application/json': {
               schema: {
                 $ref: '#/components/schemas/Error'
               },
-              example: {
-                message: 'User´s email already exists',
-                internal_code: 'invalid_parameters'
+              examples: {
+                field_validation_error: {
+                  summary: 'Field validation error',
+                  value: {
+                    message: 'first_name must be present',
+                    internal_code: 'field_validation_error'
+                  }
+                },
+                user_email_repeated_error: {
+                  summary: 'E-mail already in use error',
+                  value: {
+                    message: 'E-mail already in use',
+                    internal_code: 'user_email_repeated_error'
+                  }
+                }
               }
             }
           }
