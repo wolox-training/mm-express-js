@@ -1,3 +1,3 @@
 const { truncateDatabase } = require('./utils');
 
-truncateDatabase().catch(() => process.exit(1));
+global.beforeAll(() => truncateDatabase());
