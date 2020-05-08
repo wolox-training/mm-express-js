@@ -17,7 +17,10 @@ describe('POST /users/sessions', () => {
   describe('with an user created', () => {
     const email = 'user_email@wolox.co';
     const password = 'secret_password_123';
-    beforeAll(async () => createUser({ email, password: await hashPassword(password) }));
+    let user = {};
+    beforeAll(async () => {
+      user = await createUser({ email, password: await hashPassword(password) });
+    });
     afterAll(() => truncateDatabase());
 
     describe('when sending the correct params', () => {
@@ -26,16 +29,16 @@ describe('POST /users/sessions', () => {
         sessionCreationResponse = await httpRequest(params);
       });
 
-      test('Responds with 201 created', () =>
-        httpRequest(params).then(response => expect(response.status).toBe(201)));
+      test('Responds with 201 status code', () => expect(sessionCreationResponse.status).toBe(201));
 
       test('Responds with a token', () =>
-        httpRequest(params).then(response =>
-          expect(response.body).toMatchObject({ token: expect.any(String) })
-        ));
+        expect(sessionCreationResponse.body).toMatchObject({ token: expect.any(String) }));
 
       test('Responds with a correct JWT containing user data', () =>
-        httpRequest(params).then(response => expect(decode(response.body.token)).toMatchObject({ email })));
+        expect(decode(sessionCreationResponse.body.token)).toMatchObject({
+          sub: user.id,
+          email: user.email
+        }));
     });
 
     describe('when sending an invalid password', () => {
@@ -44,7 +47,7 @@ describe('POST /users/sessions', () => {
         sessionCreationResponse = await httpRequest(params);
       });
 
-      test('Responds with 422 unprocessable entity', () => expect(sessionCreationResponse.status).toBe(422));
+      test('Responds with 401 status code', () => expect(sessionCreationResponse.status).toBe(401));
 
       test('Responds with the expected error code', () =>
         expect(sessionCreationResponse.body.internal_code).toBe(INVALID_LOGIN_ERROR));
@@ -56,7 +59,7 @@ describe('POST /users/sessions', () => {
         sessionCreationResponse = await httpRequest(params);
       });
 
-      test('Responds with 422 unprocessable entity', () => expect(sessionCreationResponse.status).toBe(422));
+      test('Responds with 422 status code', () => expect(sessionCreationResponse.status).toBe(422));
 
       test('Responds with the expected error code', () =>
         expect(sessionCreationResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
@@ -69,7 +72,7 @@ describe('POST /users/sessions', () => {
       sessionCreationResponse = await httpRequest(params);
     });
 
-    test('Responds with 422 unprocessable entity', () => expect(sessionCreationResponse.status).toBe(422));
+    test('Responds with 401 status code', () => expect(sessionCreationResponse.status).toBe(401));
 
     test('Responds with the expected error code', () =>
       expect(sessionCreationResponse.body.internal_code).toBe(INVALID_LOGIN_ERROR));

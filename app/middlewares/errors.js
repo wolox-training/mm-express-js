@@ -9,7 +9,7 @@ const statusCodes = {
   [errors.EXTERNAL_SERVICE_ERROR]: 502,
   [errors.FIELD_VALIDATION_ERROR]: 422,
   [errors.USER_EMAIL_REPEATED_ERROR]: 422,
-  [errors.INVALID_LOGIN_ERROR]: 422
+  [errors.INVALID_LOGIN_ERROR]: 401
 };
 
 exports.handle = (error, req, res, next) => {
