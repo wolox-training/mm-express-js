@@ -17,7 +17,7 @@ module.exports = {
   },
   password: {
     type: 'password',
-    example: '14_fsda_21'
+    example: 'PassWord_123'
   },
   UserCreationBody: {
     type: 'object',
