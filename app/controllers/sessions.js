@@ -5,10 +5,10 @@ const { encode } = require('../helpers/jwt_utils');
 const { invalidLoginError } = require('../errors');
 
 const payloadData = ({ id, email }) => ({ sub: id, email });
-const verifyUserPresence = user => user || Promise.reject(invalidLoginError('User or password is invalid'));
+const verifyUserPresence = user => user || Promise.reject(invalidLoginError('Email or password are invalid'));
 const verifyPassword = (user, password) =>
   compare(password, user.password).then(passwordOk =>
-    passwordOk ? user : Promise.reject(invalidLoginError('User or password is invalid'))
+    passwordOk ? user : Promise.reject(invalidLoginError('Email or password are invalid'))
   );
 
 exports.createSession = (req, res, next) =>
