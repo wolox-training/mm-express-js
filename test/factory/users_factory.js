@@ -9,7 +9,11 @@ factoryByModel(modelName);
 
 const generateEmail = () => factory.seq('User.email', n => `user${n}@wolox.com.ar`);
 
-const buildDefaultAttrs = params => ({ ...params, email: params.email || generateEmail() });
+const buildDefaultAttrs = params => ({
+  ...params,
+  email: params.email || generateEmail(),
+  password: params.password || factory.chance('string', { length: 10 })
+});
 
 exports.createUser = (defaultAttrs = {}, buildOptions = {}) =>
   factory.create(modelName, buildDefaultAttrs(defaultAttrs), buildOptions);

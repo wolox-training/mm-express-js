@@ -11,9 +11,7 @@ exports.userBodyValidations = fieldsValidation([
   body('last_name', 'last_name must be present')
     .not()
     .isEmpty(),
-  body('password', 'password must be present')
-    .not()
-    .isEmpty(),
+  body('password', 'password must have at least 7 characters').isLength({ min: 7 }),
   body('email', 'email must have email format').isEmail()
 ]);
 

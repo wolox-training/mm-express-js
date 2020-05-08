@@ -50,6 +50,22 @@ describe('POST /users', () => {
       ));
   });
 
+  describe('when password doesn´t satisfy minimun length', () => {
+    beforeAll(() => {
+      userCreatedResponse = buildUserJson({ password: 'short' }).then(httpRequest);
+    });
+    afterAll(() => truncateDatabase());
+
+    test('Responds with 422 status code', () =>
+      userCreatedResponse.then(response => expect(response.statusCode).toBe(422)));
+
+    test('Responds with the expected error code', () =>
+      userCreatedResponse.then(response => expect(response.body.internal_code).toBe(FIELD_VALIDATION_ERROR)));
+
+    test('Does not create a new user', () =>
+      userCreatedResponse.then(() => expect(User.count()).resolves.toBe(0)));
+  });
+
   describe('without mandatory parameters', () => {
     beforeAll(() => {
       userCreatedResponse = httpRequest({});
