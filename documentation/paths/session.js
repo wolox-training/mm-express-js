@@ -1,7 +1,7 @@
 module.exports = {
   '/users/sessions': {
     post: {
-      tags: ['CRUD operations'],
+      tags: ['Users'],
       description: 'Create user session',
       operationId: 'createUserSession',
       parameters: [],
@@ -26,27 +26,29 @@ module.exports = {
             }
           }
         },
-        422: {
-          description: 'Invalid parameters',
+        401: {
+          description: 'Invalid credentials',
           content: {
             'application/json': {
               schema: {
                 $ref: '#/components/schemas/Error'
               },
-              examples: {
-                field_validation_error: {
-                  summary: 'Field validation error',
-                  value: {
-                    message: 'email must be present',
-                    internal_code: 'field_validation_error'
-                  }
+              example: {
+                message: 'User or password are invalid',
+                internal_code: 'invalid_login_error'
+              }
+            }
+          },
+          422: {
+            description: 'Invalid parameters',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
                 },
-                invalid_login_error: {
-                  summary: 'Invalid login',
-                  value: {
-                    message: 'User or password are invalid',
-                    internal_code: 'invalid_login_error'
-                  }
+                example: {
+                  message: 'email must be present',
+                  internal_code: 'field_validation_error'
                 }
               }
             }
