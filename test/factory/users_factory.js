@@ -18,6 +18,9 @@ const buildDefaultAttrs = params => ({
 exports.createUser = (defaultAttrs = {}, buildOptions = {}) =>
   factory.create(modelName, buildDefaultAttrs(defaultAttrs), buildOptions);
 
+exports.createManyUsers = (count, defaultAttrs = {}, buildOptions = {}) =>
+  factory.createMany(modelName, count, buildDefaultAttrs(defaultAttrs), buildOptions);
+
 exports.buildUserJson = (defaultAttrs = {}, buildOptions = {}) =>
   factory
     .attrs(modelName, buildDefaultAttrs(defaultAttrs), buildOptions)
