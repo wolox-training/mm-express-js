@@ -8,13 +8,11 @@ const buildErrorMessage = errors =>
     .map(error => error.msg)
     .join('; ');
 
-exports.fieldsValidation = (...validations) => (req, res, next) =>
-  Promise.all(validations.flat().map(validation => validation.run(req)))
-    .then(() => {
-      const errors = validationResult(req);
-      if (errors.isEmpty()) return next();
-      throw fieldValidationError(buildErrorMessage(errors));
-    })
-    .catch(next);
-
-exports.schemaValidation = schema => exports.fieldsValidation(checkSchema(schema));
+exports.schemaValidation = schema => [
+  checkSchema(schema),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) return next();
+    throw fieldValidationError(buildErrorMessage(errors));
+  }
+];
