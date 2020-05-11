@@ -1,6 +1,7 @@
-const { createUser } = require('../services/users');
+const { createUser, findAllUsers } = require('../services/users');
 const { creationParamsMapper } = require('../mappers/users');
-const { showUserSerializer } = require('../serializers/users');
+const { paginationParamsMapper } = require('../mappers/pagination_params');
+const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
 const { hashPassword } = require('../helpers/passwords');
 
 exports.createUser = (req, res, next) => {
@@ -10,3 +11,8 @@ exports.createUser = (req, res, next) => {
     .then(user => res.status(201).send(showUserSerializer(user)))
     .catch(next);
 };
+
+exports.usersIndex = (req, res, next) =>
+  findAllUsers(paginationParamsMapper(req.query))
+    .then(page => res.status(200).send(usersPageSerializer(page)))
+    .catch(next);

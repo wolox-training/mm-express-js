@@ -1,6 +1,6 @@
 const { healthCheck } = require('./controllers/healthCheck');
-const { createUser } = require('./controllers/users');
 const { createUserSession } = require('./controllers/sessions');
+const { createUser, usersIndex } = require('./controllers/users');
 const { validateUserEmailUniqueness } = require('./middlewares/users');
 const { verifyUserPresence } = require('./middlewares/sessions');
 const { schemaValidation } = require('./middlewares/fields_validation');
@@ -9,6 +9,7 @@ const { sessionsCreationSchema } = require('./schemas/sessions');
 
 exports.init = app => {
   app.get('/health', healthCheck);
+  app.get('/users', usersIndex);
   app.post('/users', [schemaValidation(userCreationSchema), validateUserEmailUniqueness], createUser);
   app.post(
     '/users/sessions',
