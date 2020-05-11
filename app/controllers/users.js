@@ -1,4 +1,4 @@
-const { createUser, findAllUsers } = require('../services/users');
+const { createUser, findAndCountAllUsers } = require('../services/users');
 const { creationParamsMapper } = require('../mappers/users');
 const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
@@ -13,6 +13,6 @@ exports.createUser = (req, res, next) => {
 };
 
 exports.usersIndex = (req, res, next) =>
-  findAllUsers(paginationParamsMapper(req.query))
+  findAndCountAllUsers(paginationParamsMapper(req.query))
     .then(page => res.status(200).send(usersPageSerializer(page)))
     .catch(next);
