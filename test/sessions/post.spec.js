@@ -36,8 +36,7 @@ describe('POST /users/sessions', () => {
 
       test('Responds with a correct JWT containing user data', () =>
         expect(decode(sessionCreationResponse.body.token)).toMatchObject({
-          sub: user.id,
-          email: user.email
+          sub: user.email
         }));
     });
 
