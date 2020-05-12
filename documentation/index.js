@@ -26,7 +26,7 @@ module.exports = {
       description: 'Local server'
     },
     {
-      url: 'https://api_url_testing',
+      url: 'https://weets-api-node.herokuapp.com',
       description: 'Testing server'
     }
   ],
