@@ -4,5 +4,5 @@ const { userBodyValidations, validateUserEmailUniqueness } = require('./middlewa
 
 exports.init = app => {
   app.get('/health', healthCheck);
-  app.post('/users', userBodyValidations, validateUserEmailUniqueness, createUser);
+  app.post('/users', [userBodyValidations, validateUserEmailUniqueness], createUser);
 };
