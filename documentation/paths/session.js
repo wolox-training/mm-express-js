@@ -16,8 +16,8 @@ module.exports = {
         required: true
       },
       responses: {
-        201: {
-          description: 'Token was created',
+        200: {
+          description: 'Token returned',
           content: {
             'application/json': {
               schema: {

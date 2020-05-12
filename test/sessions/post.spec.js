@@ -29,7 +29,7 @@ describe('POST /users/sessions', () => {
         sessionCreationResponse = await httpRequest(params);
       });
 
-      test('Responds with 201 status code', () => expect(sessionCreationResponse.status).toBe(201));
+      test('Responds with 200 status code', () => expect(sessionCreationResponse.status).toBe(200));
 
       test('Responds with a token', () =>
         expect(sessionCreationResponse.body).toMatchObject({ token: expect.any(String) }));
