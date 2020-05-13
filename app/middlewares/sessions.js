@@ -17,11 +17,10 @@ exports.verifyUserPresence = (req, res, next) =>
     .catch(next);
 
 exports.verifyJwt = (req, res, next) => {
-  const token = req.headers[header_name] && req.headers[header_name].split(' ')[1];
+  const token = req.headers[header_name] && req.headers[header_name].split(/\s+/)[1];
   if (!token) return next(authorizationError('You need to be logged in'));
   try {
-    req.user = req.user || {};
-    req.user.jwt_payload = decode(token);
+    req.jwt_payload = decode(token);
     return next();
   } catch {
     return next(authorizationError('Invalid credentials'));
