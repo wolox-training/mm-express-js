@@ -23,3 +23,6 @@ exports.invalidLoginError = message => internalError(message, exports.INVALID_LO
 
 exports.AUTHORIZATION_ERROR = 'authorization_error';
 exports.authorizationError = message => internalError(message, exports.AUTHORIZATION_ERROR);
+
+exports.PERMISSIONS_ERROR = 'permissions_error';
+exports.permisionsError = message => internalError(message, exports.PERMISSIONS_ERROR);
