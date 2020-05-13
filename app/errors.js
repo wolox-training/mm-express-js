@@ -20,3 +20,6 @@ exports.userEmailRepeatedError = message => internalError(message, exports.USER_
 
 exports.INVALID_LOGIN_ERROR = 'invalid_login_error';
 exports.invalidLoginError = message => internalError(message, exports.INVALID_LOGIN_ERROR);
+
+exports.AUTHORIZATION_ERROR = 'authorization_error';
+exports.authorizationError = message => internalError(message, exports.AUTHORIZATION_ERROR);
