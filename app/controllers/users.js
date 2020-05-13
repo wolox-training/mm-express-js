@@ -4,23 +4,19 @@ const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
 const { hashPassword } = require('../helpers/passwords');
 
-exports.createUser = (req, res, next) => {
+const userCreationEndpoint = creator => (req, res, next) => {
   const userBody = creationParamsMapper(req.body);
   return hashPassword(userBody.password)
-    .then(password => createUser({ ...userBody, password }))
+    .then(password => creator({ ...userBody, password }))
     .then(user => res.status(201).send(showUserSerializer(user)))
     .catch(next);
 };
+
+exports.createUser = userCreationEndpoint(createUser);
+
+exports.createAdminUser = userCreationEndpoint(createAdminUser);
 
 exports.usersIndex = (req, res, next) =>
   findAndCountAllUsers(paginationParamsMapper(req.query))
     .then(page => res.status(200).send(usersPageSerializer(page)))
     .catch(next);
-
-exports.createAdminUser = (req, res, next) => {
-  const userBody = creationParamsMapper(req.body);
-  return hashPassword(userBody.password)
-    .then(password => createAdminUser({ ...userBody, password }))
-    .then(user => res.status(201).send(showUserSerializer(user)))
-    .catch(next);
-};
