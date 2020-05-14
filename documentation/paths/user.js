@@ -4,6 +4,7 @@ module.exports = {
       tags: ['Users'],
       description: 'List users',
       operationId: 'listUsers',
+      security: [{ BearerAuth: [] }],
       parameters: [
         {
           name: 'limit',
