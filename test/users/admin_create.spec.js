@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const app = require('../../app');
 const { camelizeKeys } = require('../../app/helpers/object_utils');
-const { buildUserJson } = require('../factory/users_factory');
+const { buildUserJson, createUser } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, AUTHORIZATION_ERROR, PERMISSIONS_ERROR } = require('../../app/errors');
 const { authorizedUserWithToken } = require('../helpers/authorized_user');
 const { User } = require('../../app/models');
@@ -20,18 +20,43 @@ describe('POST /users', () => {
 
   describe('With an admin user logged in', () => {
     describe('when params are OK', () => {
-      beforeAll(async () => {
-        const { token } = await authorizedUserWithToken({ role: 'admin' });
-        userCreationResponse = await httpRequest(await buildUserJson(), token);
+      describe('when an user does not exists', () => {
+        let createdUser = {};
+        beforeAll(async () => {
+          const { token } = await authorizedUserWithToken({ role: 'admin' });
+          userCreationResponse = await httpRequest(await buildUserJson(), token);
+          createdUser = await User.findByPk(userCreationResponse.body.id);
+        });
+        afterAll(() => truncateDatabase());
+
+        test('Responds with 201 status code', () => expect(userCreationResponse.statusCode).toBe(201));
+
+        test('Creates the returned user', () =>
+          expect(createdUser).toMatchObject(camelizeKeys(userCreationResponse.body)));
+
+        test('Creates an user with admin role', () => expect(createdUser.role).toBe('admin'));
       });
-      afterAll(() => truncateDatabase());
 
-      test('Responds with 201 status code', () => expect(userCreationResponse.statusCode).toBe(201));
+      describe('when exists an user with this email', () => {
+        const email = 'some_user@wolox.cl';
+        let user = {};
 
-      test('Creates the returned user', () =>
-        expect(User.findByPk(userCreationResponse.body.id)).resolves.toMatchObject(
-          camelizeKeys(userCreationResponse.body)
-        ));
+        beforeAll(async () => {
+          const [createdUser, { token }] = await Promise.all([
+            createUser({ email }),
+            authorizedUserWithToken({ role: 'admin' })
+          ]);
+          userCreationResponse = await httpRequest(await buildUserJson({ email }), token);
+          user = await createdUser.reload();
+        });
+        afterAll(() => truncateDatabase());
+
+        test('Responds with 201 status code', () => expect(userCreationResponse.statusCode).toBe(201));
+
+        test('Updates the non admin user', () => expect(user).toMatchObject(camelizeKeys(user.body)));
+
+        test('Updates role´s user to admin', () => expect(user.role).toBe('admin'));
+      });
     });
 
     describe('when params are wrong', () => {
