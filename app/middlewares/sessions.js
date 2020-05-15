@@ -20,9 +20,18 @@ exports.verifyJwt = (req, res, next) => {
   const token = req.headers[header_name] && req.headers[header_name].split(/\s+/)[1];
   if (!token) return next(authorizationError('You need to be logged in'));
   try {
-    req.jwt_payload = decode(token);
+    req.jwtPayload = decode(token);
     return next();
   } catch {
     return next(authorizationError('Invalid credentials'));
   }
 };
+
+exports.setCurrentUser = (req, res, next) =>
+  findUserByEmail(req.jwtPayload.sub)
+    .then(user => {
+      if (!user) return next(authorizationError('Not a valid user'));
+      req.currentUser = user;
+      return next();
+    })
+    .catch(next);
