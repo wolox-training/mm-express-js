@@ -5,7 +5,7 @@ exports.verifyUserPresence = (req, res, next) =>
   findUserByEmail(req.body.email)
     .then(user => {
       if (!user) return next(invalidLoginError('Email or password are invalid'));
-      req.user = user;
+      req.body.user = user;
       return next();
     })
     .catch(next);

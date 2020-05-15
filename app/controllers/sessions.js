@@ -10,6 +10,6 @@ const verifyPassword = (user, password) =>
   });
 
 exports.createUserSession = (req, res, next) =>
-  verifyPassword(req.user, req.body.password)
-    .then(() => res.status(200).send({ token: encode(payloadData(req.user)) }))
+  verifyPassword(req.body.user, req.body.password)
+    .then(() => res.status(200).send({ token: encode(payloadData(req.body.user)) }))
     .catch(next);
