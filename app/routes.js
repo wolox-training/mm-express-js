@@ -5,6 +5,7 @@ const { createUser, usersIndex } = require('./controllers/users');
 const { validateUserEmailUniqueness } = require('./middlewares/users');
 const { verifyUserPresence, verifyJwt, setCurrentUser } = require('./middlewares/sessions');
 const { schemaValidation } = require('./middlewares/fields_validation');
+const { setWeetContent } = require('./middlewares/weets');
 const { userCreationSchema } = require('./schemas/users');
 const { sessionsCreationSchema } = require('./schemas/sessions');
 const { paginationParamsSchema } = require('./schemas/pagination_params');
@@ -18,5 +19,5 @@ exports.init = app => {
     [schemaValidation(sessionsCreationSchema), verifyUserPresence],
     createUserSession
   );
-  app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
+  app.post('/weets', [verifyJwt, setCurrentUser, setWeetContent], createWeet);
 };

@@ -23,3 +23,6 @@ exports.invalidLoginError = message => internalError(message, exports.INVALID_LO
 
 exports.AUTHORIZATION_ERROR = 'authorization_error';
 exports.authorizationError = message => internalError(message, exports.AUTHORIZATION_ERROR);
+
+exports.WEET_LENGTH_EXCEEDED = 'weet_length_exceeded';
+exports.weetLengthExceeded = message => internalError(message, exports.WEET_LENGTH_EXCEEDED);
