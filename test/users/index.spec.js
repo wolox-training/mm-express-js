@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { sortBy } = require('lodash');
 
 const app = require('../../app');
 const { createManyUsers } = require('../factory/users_factory');
@@ -13,8 +14,8 @@ describe('GET /users', () => {
     let token = {};
 
     beforeAll(async () => {
-      users = await createManyUsers(2);
-      token = await tokenFromUser(users[0]);
+      users = sortBy(await createManyUsers(2), user => user.id);
+      token = tokenFromUser(users[0]);
     });
 
     const httpRequest = (query = {}) =>
