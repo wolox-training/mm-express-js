@@ -1,9 +1,14 @@
 const request = require('supertest');
+const chance = require('chance').Chance(); // eslint-disable-line new-cap
 
 const app = require('../../app');
 const { AUTHORIZATION_ERROR, EXTERNAL_SERVICE_ERROR, WEET_LENGTH_EXCEEDED } = require('../../app/errors');
 const { authorizedUserWithToken } = require('../helpers/authorized_user');
 const { truncateDatabase } = require('../utils');
+const {
+  mockGeekJokesFailureResponse,
+  mockGeekJokesSuccessResponse
+} = require('../mocks/geek_jokes_responses');
 
 describe('POST /weets', () => {
   const httpRequest = token => {
@@ -30,9 +35,10 @@ describe('POST /weets', () => {
     describe('When response from jokes api is succesful', () => {
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
+        mockGeekJokesSuccessResponse();
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase);
+      afterAll(() => truncateDatabase());
       test('Responds with 201 status code', () => expect(weetCreationResponse.statusCode).toBe(201));
 
       test('Responds with the expected schema', () =>
@@ -47,9 +53,10 @@ describe('POST /weets', () => {
     describe('With a failure response from jokes api', () => {
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
+        mockGeekJokesFailureResponse();
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase);
+      afterAll(() => truncateDatabase());
 
       test('Responds with 502 status code', () => expect(weetCreationResponse.statusCode).toBe(502));
 
@@ -61,11 +68,14 @@ describe('POST /weets', () => {
     });
 
     describe('When jokes api responds with a jokes with more than 140 characters', () => {
+      const largeJoke = chance.word({ length: 141 });
+
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
+        mockGeekJokesSuccessResponse(largeJoke);
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase);
+      afterAll(() => truncateDatabase());
 
       test('Responds with 502 status code', () => expect(weetCreationResponse.statusCode).toBe(502));
 

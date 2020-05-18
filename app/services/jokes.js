@@ -11,7 +11,7 @@ const {
 exports.getRandomJoke = () => {
   info('Calling jokesService.getRandomJoke');
   return axios
-    .get(baseUrl)
+    .get(baseUrl, { params: { format: 'json' } })
     .then(response => {
       if (response.data && response.data.joke) return response.data.joke;
       throw externalServiceError('Geek Jokes responds with an invalid body');
