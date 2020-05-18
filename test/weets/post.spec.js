@@ -31,11 +31,12 @@ describe('POST /weets', () => {
   describe('With an authorized user', () => {
     let user = {};
     let token = {};
+    let mock = {};
 
     describe('When response from jokes api is succesful', () => {
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
-        mockGeekJokesSuccessResponse();
+        mock = mockGeekJokesSuccessResponse();
         weetCreationResponse = await httpRequest(token);
       });
       afterAll(() => truncateDatabase());
@@ -48,12 +49,14 @@ describe('POST /weets', () => {
         }));
 
       test('Creates a weet belonging to this user', () => expect(user.getWeets()).resolves.toHaveLength(1));
+
+      test('Calls mock', () => expect(mock.isDone()).toBe(true));
     });
 
     describe('With a failure response from jokes api', () => {
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
-        mockGeekJokesFailureResponse();
+        mock = mockGeekJokesFailureResponse();
         weetCreationResponse = await httpRequest(token);
       });
       afterAll(() => truncateDatabase());
@@ -65,6 +68,8 @@ describe('POST /weets', () => {
 
       test('Does not create a weet belonging to this user', () =>
         expect(user.getWeets()).resolves.toHaveLength(0));
+
+      test('Calls mock', () => expect(mock.isDone()).toBe(true));
     });
 
     describe('When jokes api responds with a jokes with more than 140 characters', () => {
@@ -72,7 +77,7 @@ describe('POST /weets', () => {
 
       beforeAll(async () => {
         ({ user, token } = await authorizedUserWithToken());
-        mockGeekJokesSuccessResponse(largeJoke);
+        mock = mockGeekJokesSuccessResponse(largeJoke);
         weetCreationResponse = await httpRequest(token);
       });
       afterAll(() => truncateDatabase());
@@ -84,6 +89,8 @@ describe('POST /weets', () => {
 
       test('Does not create a weet belonging to this user', () =>
         expect(user.getWeets()).resolves.toHaveLength(0));
+
+      test('Calls mock', () => expect(mock.isDone()).toBe(true));
     });
   });
 });

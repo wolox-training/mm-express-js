@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { info } = require('../logger');
 
-const { externalServiceError } = require('../errors');
+const { externalServiceError, EXTERNAL_SERVICE_ERROR } = require('../errors');
 const {
   common: {
     geekJokesApi: { baseUrl }
@@ -17,6 +17,7 @@ exports.getRandomJoke = () => {
       throw externalServiceError('Geek Jokes responds with an invalid body');
     })
     .catch(error => {
+      if (error.internalCode && error.internalCode === EXTERNAL_SERVICE_ERROR) throw error;
       throw externalServiceError(
         error.response
           ? `Geek Jokes API reponds with ${error.response.status}`
