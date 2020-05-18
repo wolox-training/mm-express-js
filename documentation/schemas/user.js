@@ -53,5 +53,11 @@ module.exports = {
         $ref: '#/components/schemas/userEmail'
       }
     }
+  },
+  Users: {
+    type: 'array',
+    items: {
+      $ref: '#/components/schemas/User'
+    }
   }
 };
