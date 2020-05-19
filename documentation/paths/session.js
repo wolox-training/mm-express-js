@@ -44,11 +44,7 @@ module.exports = {
             content: {
               'application/json': {
                 schema: {
-                  $ref: '#/components/schemas/error'
-                },
-                example: {
-                  message: 'email must be present',
-                  internal_code: 'field_validation_error'
+                  $ref: '#/components/schemas/fieldValidationError'
                 }
               }
             }

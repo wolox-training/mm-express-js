@@ -14,5 +14,18 @@ module.exports = {
         type: 'string'
       }
     }
+  },
+  fieldValidationError: {
+    type: 'object',
+    properties: {
+      message: {
+        type: 'string',
+        example: 'first_name must be present'
+      },
+      internal_code: {
+        type: 'string',
+        example: 'field_validation_error'
+      }
+    }
   }
 };
