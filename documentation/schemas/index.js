@@ -4,7 +4,7 @@ const session = require('./session');
 module.exports = {
   ...user,
   ...session,
-  Error: {
+  error: {
     type: 'object',
     properties: {
       message: {

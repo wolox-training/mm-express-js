@@ -10,7 +10,7 @@ module.exports = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/components/schemas/UserCreationBody'
+              $ref: '#/components/schemas/userCreationBody'
             }
           }
         },
@@ -22,7 +22,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/user'
               }
             }
           }
@@ -32,7 +32,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/error'
               },
               example: {
                 message: 'You need to be logged in',
@@ -46,7 +46,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/error'
               },
               example: {
                 message: 'You have not permission to access this resource',
@@ -60,7 +60,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/error'
               },
               example: {
                 message: 'first_name must be present',

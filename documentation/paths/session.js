@@ -9,7 +9,7 @@ module.exports = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/components/schemas/SessionCreationBody'
+              $ref: '#/components/schemas/sessionCreationBody'
             }
           }
         },
@@ -21,7 +21,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Session'
+                $ref: '#/components/schemas/session'
               }
             }
           }
@@ -31,7 +31,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/error'
               },
               example: {
                 message: 'User or password are invalid',
@@ -44,7 +44,7 @@ module.exports = {
             content: {
               'application/json': {
                 schema: {
-                  $ref: '#/components/schemas/Error'
+                  $ref: '#/components/schemas/error'
                 },
                 example: {
                   message: 'email must be present',

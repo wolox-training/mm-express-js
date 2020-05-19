@@ -19,7 +19,7 @@ module.exports = {
     type: 'password',
     example: 'PassWord_123'
   },
-  UserCreationBody: {
+  userCreationBody: {
     type: 'object',
     properties: {
       first_name: {
@@ -37,7 +37,7 @@ module.exports = {
     },
     required: ['first_name', 'last_name', 'email', 'password']
   },
-  User: {
+  user: {
     type: 'object',
     properties: {
       id: {
@@ -54,10 +54,10 @@ module.exports = {
       }
     }
   },
-  Users: {
+  users: {
     type: 'array',
     items: {
-      $ref: '#/components/schemas/User'
+      $ref: '#/components/schemas/user'
     }
   }
 };
