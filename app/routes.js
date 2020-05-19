@@ -19,7 +19,7 @@ exports.init = app => {
     createUserSession
   );
   app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
-  app.get('/weets', [(schemaValidation(paginationParamsSchema), verifyJwt)], weetsIndex);
+  app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt], weetsIndex);
 
   app.use('/admin', verifyJwt, verifyAdmin);
   app.post('/admin/users', [schemaValidation(userCreationSchema), setUserByEmail], createAdminUser);

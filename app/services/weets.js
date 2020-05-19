@@ -4,10 +4,14 @@ const { databaseError } = require('../errors');
 
 exports.createWeet = (content, user) => {
   info('weets.createWeet: Creating weet');
-  return Weet.create({ content, userId: user.id }).catch(error => databaseError(error));
+  return Weet.create({ content, userId: user.id }).catch(error => {
+    throw databaseError(error);
+  });
 };
 
 exports.findAndCountAllWeets = ({ offset, limit }) => {
   info('Calling weets.findAndCountAllWeets');
-  return Weet.findAndCountAll({ offset, limit, order: [['id', 'asc']] }).catch(error => databaseError(error));
+  return Weet.findAndCountAll({ offset, limit, order: [['id', 'asc']] }).catch(error => {
+    throw databaseError(error);
+  });
 };
