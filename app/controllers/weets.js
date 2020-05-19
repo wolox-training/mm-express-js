@@ -1,6 +1,7 @@
-const { createWeet } = require('../services/weets');
-const { showWeetSerializer } = require('../serializers/weets');
 const { getRandomJoke } = require('../services/jokes');
+const { createWeet, findAndCountAllWeets } = require('../services/weets');
+const { paginationParamsMapper } = require('../mappers/pagination_params');
+const { showWeetSerializer, weetsPageSerializer } = require('../serializers/weets');
 const { weetLengthExceeded } = require('../errors');
 
 exports.createWeet = (req, res, next) =>
@@ -11,4 +12,9 @@ exports.createWeet = (req, res, next) =>
     })
     .then(joke => createWeet(joke, req.currentUser))
     .then(weet => res.status(201).send(showWeetSerializer(weet)))
+    .catch(next);
+
+exports.weetsIndex = (req, res, next) =>
+  findAndCountAllWeets(paginationParamsMapper(req.query))
+    .then(page => res.status(200).send(weetsPageSerializer(page)))
     .catch(next);
