@@ -1,11 +1,11 @@
 const request = require('supertest');
 
 const app = require('../../app');
-const { camelizeKeys } = require('../../app/helpers/object_utils');
 const { buildUserJson, createUser } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, AUTHORIZATION_ERROR, PERMISSIONS_ERROR } = require('../../app/errors');
 const { authorizedUserWithToken } = require('../helpers/authorized_user');
 const { User } = require('../../app/models');
+const { showUserSerializer } = require('../../app/serializers/users');
 const { truncateDatabase } = require('../utils');
 
 describe('POST /users', () => {
@@ -32,7 +32,7 @@ describe('POST /users', () => {
         test('Responds with 201 status code', () => expect(userCreationResponse.statusCode).toBe(201));
 
         test('Creates the returned user', () =>
-          expect(createdUser).toMatchObject(camelizeKeys(userCreationResponse.body)));
+          expect(showUserSerializer(createdUser)).toMatchObject(userCreationResponse.body));
 
         test('Creates an user with admin role', () => expect(createdUser.role).toBe('admin'));
       });

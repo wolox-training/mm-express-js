@@ -3,9 +3,9 @@ const request = require('supertest');
 const app = require('../../app');
 const { createUser, buildUserJson } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, USER_EMAIL_REPEATED_ERROR } = require('../../app/errors');
-const { camelizeKeys } = require('../../app/helpers/object_utils');
 const { User } = require('../../app/models');
 const { truncateDatabase } = require('../utils');
+const { showUserSerializer } = require('../../app/serializers/users');
 
 describe('POST /users', () => {
   const httpRequest = params =>
@@ -33,16 +33,17 @@ describe('POST /users', () => {
         id: expect.any(Number),
         first_name: expect.any(String),
         last_name: expect.any(String),
-        email: expect.any(String)
+        email: expect.any(String),
+        job_position: expect.any(String)
       }));
 
     test('Responds with the expected body values', async () =>
       expect(userCreationResponse.body).toMatchObject(dataToCheck(await userParams)));
 
-    test('Creates the returned user', () =>
-      expect(User.findByPk(userCreationResponse.body.id)).resolves.toMatchObject(
-        camelizeKeys(userCreationResponse.body)
-      ));
+    test('Creates the returned user', async () => {
+      const createdUser = await User.findByPk(userCreationResponse.body.id);
+      expect(showUserSerializer(createdUser)).toMatchObject(userCreationResponse.body);
+    });
   });
 
   describe('when password doesn´t satisfy minimun length', () => {

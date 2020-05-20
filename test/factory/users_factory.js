@@ -12,7 +12,8 @@ const generateEmail = () => factory.seq('User.email', n => `user${n}@wolox.com.a
 const buildDefaultAttrs = params => ({
   ...params,
   email: params.email || generateEmail(),
-  password: params.password || factory.chance('string', { length: 10 })
+  password: params.password || factory.chance('string', { length: 10 }),
+  points: Number(params.points) || 0
 });
 
 exports.createUser = (defaultAttrs = {}, buildOptions = {}) =>
