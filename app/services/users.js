@@ -23,19 +23,6 @@ exports.findAndCountAllUsers = ({ offset, limit }) => {
   });
 };
 
-exports.createAdminUser = userParams => {
-  info('Calling users.createAdminUser');
-  const defaultParams = { ...userParams, role: 'admin' };
-  return User.findOrCreate({
-    where: { email: userParams.email },
-    defaults: defaultParams
-  })
-    .then(([user, created]) => (created ? user : user.update(defaultParams)))
-    .catch(error => {
-      throw databaseError(error);
-    });
-};
-
 exports.upgradeUserToAdmin = user =>
   user.update({ role: 'admin' }).catch(error => {
     throw databaseError(error);
