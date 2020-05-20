@@ -3,8 +3,6 @@ const { info } = require('../logger');
 const { databaseError } = require('../errors');
 
 exports.createWeet = (content, user) => {
-  info('Calling weets.createWeet');
-  const weet = Weet.build({ content });
-  weet.setUser(user, { save: false });
-  return weet.save().catch(error => databaseError(error));
+  info('weets.createWeet: Creating weet');
+  return Weet.create({ content, userId: user.id }).catch(error => databaseError(error));
 };
