@@ -26,12 +26,3 @@ exports.verifyJwt = (req, res, next) => {
     return next(authorizationError('Invalid credentials'));
   }
 };
-
-exports.setCurrentUser = (req, res, next) =>
-  findUserByEmail(req.jwtPayload.sub)
-    .then(user => {
-      if (!user) return next(authorizationError('Not a valid user'));
-      req.currentUser = user;
-      return next();
-    })
-    .catch(next);

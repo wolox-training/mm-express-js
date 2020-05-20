@@ -3,8 +3,9 @@ const chance = require('chance').Chance(); // eslint-disable-line new-cap
 
 const app = require('../../app');
 const { AUTHORIZATION_ERROR, EXTERNAL_SERVICE_ERROR, WEET_LENGTH_EXCEEDED } = require('../../app/errors');
-const { authorizedUserWithToken } = require('../helpers/authorized_user');
-const { truncateDatabase } = require('../utils');
+const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorized_user');
+const { truncateDatabase, truncateTable } = require('../utils');
+const { Weet } = require('../../app/models');
 const {
   mockGeekJokesFailureResponse,
   mockGeekJokesSuccessResponse
@@ -28,18 +29,34 @@ describe('POST /weets', () => {
       expect(weetCreationResponse.body.internal_code).toBe(AUTHORIZATION_ERROR));
   });
 
+  describe('With a token from a non existent user', () => {
+    beforeAll(async () => {
+      const token = tokenFromUser({ email: 'unexisting@wolox.co' });
+      weetCreationResponse = await httpRequest(token);
+    });
+
+    test('Responds with 401 status code', () => expect(weetCreationResponse.statusCode).toBe(401));
+
+    test('Responds with the expected error code', () =>
+      expect(weetCreationResponse.body.internal_code).toBe(AUTHORIZATION_ERROR));
+  });
+
   describe('With an authorized user', () => {
     let user = {};
     let token = {};
     let mock = {};
 
+    beforeAll(async () => {
+      ({ user, token } = await authorizedUserWithToken());
+    });
+    afterAll(() => truncateDatabase());
+
     describe('When response from jokes api is succesful', () => {
       beforeAll(async () => {
-        ({ user, token } = await authorizedUserWithToken());
         mock = mockGeekJokesSuccessResponse();
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase());
+      afterAll(() => truncateTable(Weet));
       test('Responds with 201 status code', () => expect(weetCreationResponse.statusCode).toBe(201));
 
       test('Responds with the expected schema', () =>
@@ -55,11 +72,10 @@ describe('POST /weets', () => {
 
     describe('With a failure response from jokes api', () => {
       beforeAll(async () => {
-        ({ user, token } = await authorizedUserWithToken());
         mock = mockGeekJokesFailureResponse();
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase());
+      afterAll(() => truncateTable(Weet));
 
       test('Responds with 502 status code', () => expect(weetCreationResponse.statusCode).toBe(502));
 
@@ -76,11 +92,10 @@ describe('POST /weets', () => {
       const largeJoke = chance.word({ length: 141 });
 
       beforeAll(async () => {
-        ({ user, token } = await authorizedUserWithToken());
         mock = mockGeekJokesSuccessResponse(largeJoke);
         weetCreationResponse = await httpRequest(token);
       });
-      afterAll(() => truncateDatabase());
+      afterAll(() => truncateTable(Weet));
 
       test('Responds with 502 status code', () => expect(weetCreationResponse.statusCode).toBe(502));
 
