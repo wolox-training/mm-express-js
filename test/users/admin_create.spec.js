@@ -53,8 +53,6 @@ describe('POST /users', () => {
 
         test('Responds with 201 status code', () => expect(userCreationResponse.statusCode).toBe(201));
 
-        test('Updates the non admin user', () => expect(user).toMatchObject(camelizeKeys(user.body)));
-
         test('Updates role´s user to admin', () => expect(user.role).toBe('admin'));
       });
     });

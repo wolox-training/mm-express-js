@@ -35,3 +35,8 @@ exports.createAdminUser = userParams => {
       throw databaseError(error);
     });
 };
+
+exports.upgradeUserToAdmin = user =>
+  user.update({ role: 'admin' }).catch(error => {
+    throw databaseError(error);
+  });
