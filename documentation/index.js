@@ -39,6 +39,12 @@ module.exports = {
   paths,
   components: {
     schemas,
-    securitySchemes: {}
+    securitySchemes: {
+      BearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT'
+      }
+    }
   }
 };

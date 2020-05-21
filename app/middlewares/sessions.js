@@ -1,5 +1,5 @@
 const { findUserByEmail } = require('../services/users');
-const { invalidLoginError, authorizationError } = require('../errors');
+const { invalidLoginError, authorizationError, permisionsError } = require('../errors');
 const { decode } = require('../helpers/jwt_utils');
 const {
   common: {
@@ -20,9 +20,14 @@ exports.verifyJwt = (req, res, next) => {
   const token = req.headers[header_name] && req.headers[header_name].split(/\s+/)[1];
   if (!token) return next(authorizationError('You need to be logged in'));
   try {
-    req.jwt_payload = decode(token);
+    req.jwtPayload = decode(token);
     return next();
   } catch {
     return next(authorizationError('Invalid credentials'));
   }
 };
+
+exports.verifyAdmin = (req, res, next) =>
+  req.jwtPayload.role === 'admin'
+    ? next()
+    : next(permisionsError('You have not permission to access this resource'));

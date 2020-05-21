@@ -4,7 +4,7 @@ module.exports = {
     example:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjcsImVtYWlsIjoibWFydGluLm1hbGxlYSsxMjJAd29sb3guY29tLmFyIn0.bia88q209mmnXNhHR7vxQ_TrDmCEmOfcK2unrdo1Yyg'
   },
-  SessionCreationBody: {
+  sessionCreationBody: {
     type: 'object',
     properties: {
       email: {
@@ -16,7 +16,7 @@ module.exports = {
     },
     required: ['email', 'password']
   },
-  Session: {
+  session: {
     type: 'object',
     properties: {
       token: {

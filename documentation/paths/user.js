@@ -4,6 +4,7 @@ module.exports = {
       tags: ['Users'],
       description: 'List users',
       operationId: 'listUsers',
+      security: [{ BearerAuth: [] }],
       parameters: [
         {
           name: 'limit',
@@ -26,7 +27,7 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  page: { $ref: '#/components/schemas/Users' },
+                  page: { $ref: '#/components/schemas/users' },
                   total_count: { type: 'integer', example: 1 }
                 }
               }
@@ -44,7 +45,7 @@ module.exports = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/components/schemas/UserCreationBody'
+              $ref: '#/components/schemas/userCreationBody'
             }
           }
         },
@@ -56,7 +57,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/user'
               }
             }
           }
@@ -66,7 +67,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/error'
               },
               examples: {
                 field_validation_error: {
