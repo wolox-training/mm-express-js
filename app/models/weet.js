@@ -8,10 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: {
         type: DataTypes.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
         allowNull: false,
         onUpdate: 'cascade',
         onDelete: 'cascade'
