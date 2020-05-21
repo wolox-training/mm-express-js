@@ -14,3 +14,11 @@ exports.setCurrentUser = (req, res, next) =>
       return next();
     })
     .catch(next);
+
+exports.setUserByEmail = (req, res, next) =>
+  findUserByEmail(req.body.email)
+    .then(user => {
+      if (user) req.currentUser = user;
+      next();
+    })
+    .catch(next);

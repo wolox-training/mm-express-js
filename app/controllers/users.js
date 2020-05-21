@@ -1,4 +1,4 @@
-const { createUser, findAndCountAllUsers } = require('../services/users');
+const { createUser, findAndCountAllUsers, upgradeUserToAdmin } = require('../services/users');
 const { creationParamsMapper } = require('../mappers/users');
 const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
@@ -11,6 +11,13 @@ exports.createUser = (req, res, next) => {
     .then(user => res.status(201).send(showUserSerializer(user)))
     .catch(next);
 };
+exports.createAdminUser = (req, res, next) =>
+  (req.currentUser
+    ? upgradeUserToAdmin(req.currentUser)
+    : createUser({ ...creationParamsMapper(req.body), role: 'admin' })
+  )
+    .then(user => res.status(201).send(showUserSerializer(user)))
+    .catch(next);
 
 exports.usersIndex = (req, res, next) =>
   findAndCountAllUsers(paginationParamsMapper(req.query))

@@ -26,3 +26,6 @@ exports.authorizationError = message => internalError(message, exports.AUTHORIZA
 
 exports.WEET_LENGTH_EXCEEDED = 'weet_length_exceeded';
 exports.weetLengthExceeded = message => internalError(message, exports.WEET_LENGTH_EXCEEDED);
+
+exports.PERMISSIONS_ERROR = 'permissions_error';
+exports.permisionsError = message => internalError(message, exports.PERMISSIONS_ERROR);

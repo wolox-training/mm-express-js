@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      role: {
+        type: DataTypes.ENUM('user', 'admin'), // eslint-disable-line new-cap
+        allowNull: false,
+        defaultValue: 'user'
       }
     },
     { underscored: true, tableName: 'users' }

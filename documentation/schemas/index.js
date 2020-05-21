@@ -4,7 +4,7 @@ const session = require('./session');
 module.exports = {
   ...user,
   ...session,
-  Error: {
+  error: {
     type: 'object',
     properties: {
       message: {
@@ -12,6 +12,19 @@ module.exports = {
       },
       internal_code: {
         type: 'string'
+      }
+    }
+  },
+  fieldValidationError: {
+    type: 'object',
+    properties: {
+      message: {
+        type: 'string',
+        example: 'first_name must be present'
+      },
+      internal_code: {
+        type: 'string',
+        example: 'field_validation_error'
       }
     }
   }

@@ -11,7 +11,8 @@ const statusCodes = {
   [errors.USER_EMAIL_REPEATED_ERROR]: 422,
   [errors.INVALID_LOGIN_ERROR]: 401,
   [errors.AUTHORIZATION_ERROR]: 401,
-  [errors.WEET_LENGTH_EXCEEDED]: 502
+  [errors.WEET_LENGTH_EXCEEDED]: 502,
+  [errors.PERMISSIONS_ERROR]: 403
 };
 
 exports.handle = (error, req, res, next) => {

@@ -6,4 +6,4 @@ exports.authorizedUserWithToken = async userParams => {
   return { user, token: this.tokenFromUser(user) };
 };
 
-exports.tokenFromUser = user => encode({ sub: user.email });
+exports.tokenFromUser = user => encode({ sub: user.email, role: user.role });
