@@ -36,3 +36,10 @@ exports.userJobPosition = ({ points }) => {
   if (points <= 49) return 'HEAD';
   return 'CEO';
 };
+
+exports.modifyUserPointsBy = (user, by, transaction) => {
+  info(`Calling users.modifyUserPointsBy: user_id=${user.id}, by=${by}`);
+  return user.increment('points', { by, transaction }).catch(error => {
+    throw databaseError(error);
+  });
+};

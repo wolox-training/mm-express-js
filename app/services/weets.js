@@ -15,3 +15,10 @@ exports.findAndCountAllWeets = ({ offset, limit }) => {
     throw databaseError(error.message);
   });
 };
+
+exports.findWeetById = id => {
+  info('Calling weets.findWeetById');
+  return Weet.findByPk(id).catch(error => {
+    throw databaseError(error);
+  });
+};
