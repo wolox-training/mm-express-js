@@ -5,7 +5,7 @@ const { pageSerializer } = require('./pagination');
 const { userJobPosition } = require('../services/users');
 
 exports.showUserSerializer = user => {
-  const underscoredUser = underscoreKeys(pick(user, 'id', 'firstName', 'lastName', 'email'));
+  const underscoredUser = underscoreKeys(pick(user, 'id', 'firstName', 'lastName', 'email', 'points'));
   return { ...underscoredUser, job_position: userJobPosition(user) };
 };
 
