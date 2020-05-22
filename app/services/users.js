@@ -5,25 +5,25 @@ const { info } = require('../logger');
 exports.createUser = userParams => {
   info('Calling users.createUser');
   return User.create(userParams).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };
 
 exports.findUserByEmail = email => {
   info('Calling users.findUserByEmail');
   return User.findOne({ where: { email } }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };
 
 exports.findAndCountAllUsers = ({ offset, limit }) => {
   info('Calling users.findAndCountAllUsers');
   return User.findAndCountAll({ offset, limit, order: [['id', 'asc']] }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };
 
 exports.upgradeUserToAdmin = user =>
   user.update({ role: 'admin' }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
