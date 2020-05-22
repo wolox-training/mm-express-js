@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Rating.associate = ({ User, Weet }) => {
-    Rating.belongsTo(User, { foreignKey: 'ratingUserId', as: 'RatingUser' });
+    Rating.belongsTo(User, { foreignKey: 'ratingUserId', as: 'ratingUser' });
     Rating.belongsTo(Weet, { foreignKey: 'weetId' });
   };
   return Rating;
