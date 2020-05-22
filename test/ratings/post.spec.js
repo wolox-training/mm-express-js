@@ -7,7 +7,7 @@ const { createUser } = require('../factory/users_factory');
 const { createWeet } = require('../factory/weets_factory');
 const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR, RESOURCE_NOT_FOUND_ERROR } = require('../../app/errors');
 const { truncateDatabase } = require('../utils');
-const { authorizedUserWithToken } = require('../helpers/authorized_user');
+const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorized_user');
 
 describe('POST /weets/:id/ratings', () => {
   let createRatingResponse = {};
@@ -195,7 +195,7 @@ describe('POST /weets/:id/ratings', () => {
 
   describe('With an invalid token', () => {
     beforeAll(async () => {
-      const { token } = authorizedUserWithToken();
+      const { token } = tokenFromUser({ email: 'undefined@wolox.com.ar', role: 'user' });
       createRatingResponse = await httpRequest({ weetId: 1, token, body: { score: 1 } });
     });
 
