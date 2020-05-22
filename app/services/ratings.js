@@ -9,13 +9,13 @@ exports.findOrCreateRating = ({ score, user, weet }, transaction) => {
     defaults: { score },
     transaction
   }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };
 
 exports.updateRatingScore = (rating, score, transaction) => {
   info(`Calling ratings.updateRatingScore rating_id=${rating.id}, score=${score}`);
   return rating.update({ score }, { transaction }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };

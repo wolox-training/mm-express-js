@@ -11,7 +11,6 @@ const revertRating = ({ ratedUser, rating, newScore }, transaction) => {
   ]);
 };
 
-/*eslint-disable */
 exports.rateWeet = (weet, user, score) =>
   sequelize.transaction(async transaction => {
     const [rating, created] = await findOrCreateRating({ score, weet, user }, transaction);
@@ -23,4 +22,3 @@ exports.rateWeet = (weet, user, score) =>
     }
     return rating;
   });
-/* eslint-enable */

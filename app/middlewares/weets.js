@@ -6,6 +6,6 @@ exports.setWeetById = (req, res, next) =>
     .then(weet => {
       if (!weet) throw resourceNotFoundError(`Not found Weet with id: ${req.params.id}`);
       req.body.weet = weet;
-      next();
+      return next();
     })
     .catch(next);

@@ -40,6 +40,6 @@ exports.userJobPosition = ({ points }) => {
 exports.modifyUserPointsBy = (user, by, transaction) => {
   info(`Calling users.modifyUserPointsBy: user_id=${user.id}, by=${by}`);
   return user.increment('points', { by, transaction }).catch(error => {
-    throw databaseError(error);
+    throw databaseError(error.message);
   });
 };
