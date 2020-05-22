@@ -4,9 +4,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       ratingUserId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         onUpdate: 'cascade',
-        onDelete: 'cascade'
+        onDelete: 'set null'
       },
       weetId: {
         type: DataTypes.INTEGER,

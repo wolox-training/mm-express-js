@@ -16,8 +16,9 @@ module.exports = {
             model: 'users',
             key: 'id'
           },
+          allowNull: true,
           onUpdate: 'cascade',
-          onDelete: 'cascade'
+          onDelete: 'set null'
         },
         weet_id: {
           type: Sequelize.INTEGER,
