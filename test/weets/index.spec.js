@@ -1,6 +1,5 @@
 const request = require('supertest');
 const { sortBy } = require('lodash');
-const chance = require('chance').Chance(); // eslint-disable-line new-cap
 
 const app = require('../../app');
 const { createUser } = require('../factory/users_factory');
@@ -80,7 +79,8 @@ describe('GET /users', () => {
 
   describe('With an invalid token', () => {
     beforeAll(async () => {
-      weetsIndexResponse = await httpRequest({ token: chance.string({ length: 148 }) });
+      const token = tokenFromUser({ email: 'invalid@wolox.com.ar', role: 'user' });
+      weetsIndexResponse = await httpRequest({ token });
     });
 
     test('Responds with 422 status code', () => expect(weetsIndexResponse.statusCode).toBe(401));

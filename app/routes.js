@@ -11,7 +11,7 @@ const { paginationParamsSchema } = require('./schemas/pagination_params');
 
 exports.init = app => {
   app.get('/health', healthCheck);
-  app.get('/users', [schemaValidation(paginationParamsSchema), verifyJwt], usersIndex);
+  app.get('/users', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], usersIndex);
   app.post('/users', [schemaValidation(userCreationSchema), validateUserEmailUniqueness], createUser);
   app.post(
     '/users/sessions',
@@ -19,8 +19,8 @@ exports.init = app => {
     createUserSession
   );
   app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
-  app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt], weetsIndex);
+  app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], weetsIndex);
 
-  app.use('/admin', verifyJwt, verifyAdmin);
+  app.use('/admin', verifyJwt, verifyAdmin, setCurrentUser);
   app.post('/admin/users', [schemaValidation(userCreationSchema), setUserByEmail], createAdminUser);
 };

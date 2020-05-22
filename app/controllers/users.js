@@ -12,8 +12,8 @@ exports.createUser = (req, res, next) => {
     .catch(next);
 };
 exports.createAdminUser = (req, res, next) =>
-  (req.currentUser
-    ? upgradeUserToAdmin(req.currentUser)
+  (req.body.user
+    ? upgradeUserToAdmin(req.body.user)
     : createUser({ ...creationParamsMapper(req.body), role: 'admin' })
   )
     .then(user => res.status(201).send(showUserSerializer(user)))

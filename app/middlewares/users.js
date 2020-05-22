@@ -18,7 +18,7 @@ exports.setCurrentUser = (req, res, next) =>
 exports.setUserByEmail = (req, res, next) =>
   findUserByEmail(req.body.email)
     .then(user => {
-      if (user) req.currentUser = user;
+      if (user) req.body.user = user;
       next();
     })
     .catch(next);
