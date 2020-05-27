@@ -14,7 +14,7 @@ describe('GET /users', () => {
     let token = {};
 
     beforeAll(async () => {
-      users = sortBy(await createManyUsers(2), user => user.id);
+      users = sortBy(await createManyUsers(2), 'id');
       token = tokenFromUser(users[0]);
     });
 

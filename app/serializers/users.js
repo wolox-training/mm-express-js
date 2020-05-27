@@ -1,10 +1,8 @@
-const _ = require('lodash');
+const { pick } = require('lodash');
 
 const { underscoreKeys } = require('../helpers/object_utils');
+const { pageSerializer } = require('./pagination');
 
-exports.showUserSerializer = user => underscoreKeys(_.pick(user, 'id', 'firstName', 'lastName', 'email'));
+exports.showUserSerializer = user => underscoreKeys(pick(user, 'id', 'firstName', 'lastName', 'email'));
 
-exports.usersPageSerializer = ({ count, rows }) => ({
-  total_count: count,
-  page: rows.map(exports.showUserSerializer)
-});
+exports.usersPageSerializer = pageSerializer(exports.showUserSerializer);

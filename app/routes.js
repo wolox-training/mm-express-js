@@ -1,7 +1,7 @@
 const { healthCheck } = require('./controllers/healthCheck');
 const { createUserSession } = require('./controllers/sessions');
 const { createUser, usersIndex, createAdminUser } = require('./controllers/users');
-const { createWeet } = require('./controllers/weets');
+const { createWeet, weetsIndex } = require('./controllers/weets');
 const { validateUserEmailUniqueness, setUserByEmail, setCurrentUser } = require('./middlewares/users');
 const { verifyUserPresence, verifyJwt, verifyAdmin } = require('./middlewares/sessions');
 const { schemaValidation } = require('./middlewares/fields_validation');
@@ -11,7 +11,7 @@ const { paginationParamsSchema } = require('./schemas/pagination_params');
 
 exports.init = app => {
   app.get('/health', healthCheck);
-  app.get('/users', [schemaValidation(paginationParamsSchema), verifyJwt], usersIndex);
+  app.get('/users', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], usersIndex);
   app.post('/users', [schemaValidation(userCreationSchema), validateUserEmailUniqueness], createUser);
   app.post(
     '/users/sessions',
@@ -19,7 +19,8 @@ exports.init = app => {
     createUserSession
   );
   app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
+  app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], weetsIndex);
 
-  app.use('/admin', verifyJwt, verifyAdmin);
+  app.use('/admin', verifyJwt, verifyAdmin, setCurrentUser);
   app.post('/admin/users', [schemaValidation(userCreationSchema), setUserByEmail], createAdminUser);
 };
