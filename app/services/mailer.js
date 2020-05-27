@@ -1,22 +1,26 @@
 const nodemailer = require('nodemailer');
 
+const { info } = require('../logger');
+
 const {
   common: { mailer }
 } = require('../../config');
 const { externalServiceError } = require('../errors');
 
-const transporter = nodemailer.createTransport({
-  host: mailer.host,
-  port: mailer.port,
-  secure: false,
-  auth: {
-    user: mailer.user,
-    pass: mailer.pass
-  }
-});
+const getTransporter = () =>
+  nodemailer.createTransport({
+    host: mailer.host,
+    port: mailer.port,
+    secure: false,
+    auth: {
+      user: mailer.user,
+      pass: mailer.pass
+    }
+  });
 
-exports.sendWelcomeEmail = user =>
-  transporter
+exports.sendWelcomeEmail = user => {
+  info(`mailer.sendWelcomeEmail to user ${user.id}`);
+  return getTransporter()
     .sendMail({
       from: mailer.from,
       to: user.email,
@@ -26,3 +30,4 @@ exports.sendWelcomeEmail = user =>
     .catch(() => {
       throw externalServiceError(`Error when sending welcome email to user ${user.id}`);
     });
+};
