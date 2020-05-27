@@ -47,6 +47,13 @@ const config = {
     },
     geekJokesApi: {
       baseUrl: process.env.GEEK_JOKES_API_URL
+    },
+    mailer: {
+      user: process.env.MAILER_USER,
+      pass: process.env.MAILER_PASS,
+      host: process.env.MAILER_HOST,
+      port: process.env.MAILER_PORT,
+      from: process.env.MAILER_FROM_EMAIL
     }
   }
 };

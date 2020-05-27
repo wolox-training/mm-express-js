@@ -1,14 +1,19 @@
 const { createUser, findAndCountAllUsers, upgradeUserToAdmin } = require('../services/users');
+const { sendWelcomeEmail } = require('../services/mailer');
 const { creationParamsMapper } = require('../mappers/users');
 const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
 const { hashPassword } = require('../helpers/passwords');
+const logger = require('../logger');
 
 exports.createUser = (req, res, next) => {
   const userBody = creationParamsMapper(req.body);
-  return hashPassword(userBody.password)
+  hashPassword(userBody.password)
     .then(password => createUser({ ...userBody, password }))
-    .then(user => res.status(201).send(showUserSerializer(user)))
+    .then(user => {
+      res.status(201).send(showUserSerializer(user));
+      sendWelcomeEmail(user).catch(logger.error);
+    })
     .catch(next);
 };
 exports.createAdminUser = (req, res, next) =>
