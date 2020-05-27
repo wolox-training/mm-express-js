@@ -7,16 +7,22 @@ const {
 } = require('../../config');
 const { externalServiceError } = require('../errors');
 
-const getTransporter = () =>
-  nodemailer.createTransport({
-    host: mailer.host,
-    port: mailer.port,
-    secure: false,
-    auth: {
-      user: mailer.user,
-      pass: mailer.pass
-    }
-  });
+let transporter = null;
+
+const getTransporter = () => {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: mailer.host,
+      port: mailer.port,
+      secure: false,
+      auth: {
+        user: mailer.user,
+        pass: mailer.pass
+      }
+    });
+  }
+  return transporter;
+};
 
 exports.sendWelcomeEmail = user => {
   info(`mailer.sendWelcomeEmail to user ${user.id}`);
