@@ -18,7 +18,7 @@ exports.findAndCountAllWeets = ({ offset, limit }) => {
 
 exports.findWeetById = id => {
   info('Calling weets.findWeetById');
-  return Weet.findByPk(id, { include: User }).catch(error => {
+  return Weet.findByPk(id, { include: { model: User, as: 'user' } }).catch(error => {
     throw databaseError(error.message);
   });
 };

@@ -14,7 +14,7 @@ const revertRating = ({ ratedUser, rating, newScore }, transaction) => {
 exports.rateWeet = (weet, user, score) =>
   sequelize.transaction(async transaction => {
     const [rating, created] = await findOrCreateRating({ score, weet, user }, transaction);
-    const ratedUser = await weet.getUser();
+    const { user: ratedUser } = weet;
     if (created) {
       await modifyUserPointsBy(ratedUser, rating.score, transaction);
     } else if (score !== rating.score) {

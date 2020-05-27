@@ -5,7 +5,6 @@ const { createWeet, weetsIndex } = require('./controllers/weets');
 const { createRating } = require('./controllers/ratings');
 const { validateUserEmailUniqueness, setUserByEmail, setCurrentUser } = require('./middlewares/users');
 const { verifyUserPresence, verifyJwt, verifyAdmin } = require('./middlewares/sessions');
-const { setWeetById } = require('./middlewares/weets');
 const { schemaValidation } = require('./middlewares/fields_validation');
 const { userCreationSchema } = require('./schemas/users');
 const { sessionsCreationSchema } = require('./schemas/sessions');
@@ -25,7 +24,7 @@ exports.init = app => {
   app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], weetsIndex);
   app.post(
     '/weets/:id/ratings',
-    [schemaValidation(ratingSchema), verifyJwt, setCurrentUser, setWeetById],
+    [schemaValidation(ratingSchema), verifyJwt, setCurrentUser],
     createRating
   );
 
