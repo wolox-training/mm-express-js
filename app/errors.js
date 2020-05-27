@@ -30,5 +30,5 @@ exports.weetLengthExceeded = message => internalError(message, exports.WEET_LENG
 exports.PERMISSIONS_ERROR = 'permissions_error';
 exports.permisionsError = message => internalError(message, exports.PERMISSIONS_ERROR);
 
-exports.RESOURCE_NOT_FOUND_ERROR = 'resources_not_found_error';
+exports.RESOURCE_NOT_FOUND_ERROR = 'resource_not_found_error';
 exports.resourceNotFoundError = message => internalError(message, exports.RESOURCE_NOT_FOUND_ERROR);
