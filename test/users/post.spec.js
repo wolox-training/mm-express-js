@@ -89,6 +89,8 @@ describe('POST /users', () => {
       expect(userCreationResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
 
     test('Does not create a new user', () => expect(User.count()).resolves.toBe(0));
+
+    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
   });
 
   describe('when email is already used', () => {
@@ -109,5 +111,7 @@ describe('POST /users', () => {
       expect(userCreationResponse.body.internal_code).toBe(USER_EMAIL_REPEATED_ERROR));
 
     test('Does not create a new user', () => expect(User.count()).resolves.toBe(1));
+
+    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
   });
 });
