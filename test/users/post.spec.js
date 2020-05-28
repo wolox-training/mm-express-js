@@ -1,6 +1,4 @@
-const request = require('supertest');
-
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { createUser, buildUserJson } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, USER_EMAIL_REPEATED_ERROR } = require('../../app/errors');
 const { User } = require('../../app/models');
@@ -8,10 +6,7 @@ const { truncateDatabase } = require('../utils');
 const { showUserSerializer } = require('../../app/serializers/users');
 
 describe('POST /users', () => {
-  const httpRequest = params =>
-    request(app)
-      .post('/users')
-      .send(params);
+  const httpRequest = body => sendPostRequest({ path: '/users', body });
   let userCreationResponse = {};
 
   describe('when params are OK', () => {

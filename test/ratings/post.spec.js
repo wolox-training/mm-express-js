@@ -1,7 +1,6 @@
-const request = require('supertest');
 const { sample } = require('lodash');
 
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { Rating } = require('../../app/models');
 const { createUser } = require('../factory/users_factory');
 const { createWeet } = require('../factory/weets_factory');
@@ -11,12 +10,8 @@ const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorize
 
 describe('POST /weets/:id/ratings', () => {
   let createRatingResponse = {};
-  const httpRequest = ({ token, weetId, body } = {}) => {
-    const requestBuilder = request(app)
-      .post(`/weets/${weetId}/ratings`)
-      .send(body);
-    return token ? requestBuilder.set('Authorization', `Bearer ${token}`) : requestBuilder;
-  };
+  const httpRequest = ({ token, weetId, body } = {}) =>
+    sendPostRequest({ path: `/weets/${weetId}/ratings`, token, body });
 
   const responseSchema = {
     id: expect.any(Number),
@@ -125,7 +120,7 @@ describe('POST /weets/:id/ratings', () => {
 
         test('Doesn´t create a new rating', () => expect(Rating.count()).resolves.toBe(1));
 
-        test('Creates the expected rating', async () => {
+        test('Updates the expected rating', async () => {
           const rating = await Rating.findByPk(createRatingResponse.body.id);
           expect(rating).toMatchObject({
             score,

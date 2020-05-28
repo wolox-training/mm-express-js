@@ -1,6 +1,4 @@
-const request = require('supertest');
-
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { buildUserJson, createUser } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, AUTHORIZATION_ERROR, PERMISSIONS_ERROR } = require('../../app/errors');
 const { authorizedUserWithToken } = require('../helpers/authorized_user');
@@ -11,12 +9,7 @@ const { truncateDatabase } = require('../utils');
 describe('POST /users', () => {
   let userCreationResponse = {};
 
-  const httpRequest = (params, token) => {
-    const requestBuilder = request(app)
-      .post('/admin/users')
-      .send(params);
-    return token ? requestBuilder.set('Authorization', `Bearer ${token}`) : requestBuilder;
-  };
+  const httpRequest = (body, token) => sendPostRequest({ path: '/admin/users', token, body });
 
   describe('With an admin user logged in', () => {
     describe('when params are OK', () => {
