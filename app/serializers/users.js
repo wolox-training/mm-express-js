@@ -2,7 +2,11 @@ const { pick } = require('lodash');
 
 const { underscoreKeys } = require('../helpers/object_utils');
 const { pageSerializer } = require('./pagination');
+const { userJobPosition } = require('../services/users');
 
-exports.showUserSerializer = user => underscoreKeys(pick(user, 'id', 'firstName', 'lastName', 'email'));
+exports.showUserSerializer = user => {
+  const underscoredUser = underscoreKeys(pick(user, 'id', 'firstName', 'lastName', 'email'));
+  return { ...underscoredUser, job_position: userJobPosition(user) };
+};
 
 exports.usersPageSerializer = pageSerializer(exports.showUserSerializer);

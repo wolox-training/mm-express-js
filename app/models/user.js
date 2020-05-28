@@ -29,12 +29,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('user', 'admin'), // eslint-disable-line new-cap
         allowNull: false,
         defaultValue: 'user'
+      },
+      points: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: '0'
       }
     },
     { underscored: true, tableName: 'users' }
   );
-  User.associate = ({ Weet }) => {
+  User.associate = ({ Weet, Rating }) => {
     User.hasMany(Weet, { foreignKey: 'userId' });
+    User.hasMany(Rating, { foreignKey: 'ratingUserId', as: 'ratingsMade' });
   };
   return User;
 };

@@ -27,3 +27,12 @@ exports.upgradeUserToAdmin = user =>
   user.update({ role: 'admin' }).catch(error => {
     throw databaseError(error.message);
   });
+
+exports.userJobPosition = ({ points }) => {
+  if (points <= 5) return 'DEVELOPER';
+  if (points <= 9) return 'LEAD';
+  if (points <= 19) return 'TL';
+  if (points <= 29) return 'EM';
+  if (points <= 49) return 'HEAD';
+  return 'CEO';
+};
