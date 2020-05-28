@@ -4,7 +4,7 @@ const { sendPostRequest } = require('../helpers/requests');
 const { Rating } = require('../../app/models');
 const { createUser } = require('../factory/users_factory');
 const { createWeet } = require('../factory/weets_factory');
-const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR, RESOURCE_NOT_FOUND_ERROR } = require('../../app/errors');
+const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR, WEET_NOT_FOUND_ERROR } = require('../../app/errors');
 const { truncateDatabase } = require('../utils');
 const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorized_user');
 
@@ -40,7 +40,7 @@ describe('POST /weets/:id/ratings', () => {
       test('Responds with 404 status code', () => expect(createRatingResponse.statusCode).toBe(404));
 
       test('Responds with the expected error code', () =>
-        expect(createRatingResponse.body.internal_code).toBe(RESOURCE_NOT_FOUND_ERROR));
+        expect(createRatingResponse.body.internal_code).toBe(WEET_NOT_FOUND_ERROR));
     });
 
     describe('When creating the first rating', () => {

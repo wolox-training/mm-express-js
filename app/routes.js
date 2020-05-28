@@ -22,11 +22,7 @@ exports.init = app => {
   );
   app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
   app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], weetsIndex);
-  app.post(
-    '/weets/:id/ratings',
-    [schemaValidation(ratingSchema), verifyJwt, setCurrentUser],
-    createRating
-  );
+  app.post('/weets/:id/ratings', [schemaValidation(ratingSchema), verifyJwt, setCurrentUser], createRating);
 
   app.use('/admin', verifyJwt, verifyAdmin, setCurrentUser);
   app.post('/admin/users', [schemaValidation(userCreationSchema), setUserByEmail], createAdminUser);
