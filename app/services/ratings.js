@@ -3,7 +3,7 @@ const { databaseError } = require('../errors');
 const { info } = require('../logger');
 
 exports.findOrCreateRating = ({ score, user, weet }, transaction) => {
-  info(`Calling ratings.findOrCreate rating with user_id: ${user.id}, weet_id: ${weet.id}`);
+  info(`Calling ratings.findOrCreate rating with userId: ${user.id}, weetId: ${weet.id}`);
   return Rating.findOrCreate({
     where: { ratingUserId: user.id, weetId: weet.id },
     defaults: { score },
@@ -14,7 +14,7 @@ exports.findOrCreateRating = ({ score, user, weet }, transaction) => {
 };
 
 exports.updateRatingScore = (rating, score, transaction) => {
-  info(`Calling ratings.updateRatingScore rating_id=${rating.id}, score=${score}`);
+  info(`Calling ratings.updateRatingScore ratingId=${rating.id}, score=${score}`);
   return rating.update({ score }, { transaction }).catch(error => {
     throw databaseError(error.message);
   });
