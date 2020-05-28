@@ -1,7 +1,7 @@
 module.exports = {
   '/users/sessions': {
     post: {
-      tags: ['Users'],
+      tags: ['Sessions'],
       description: 'Create user session',
       operationId: 'createUserSession',
       parameters: [],
@@ -46,6 +46,34 @@ module.exports = {
                 schema: {
                   $ref: '#/components/schemas/fieldValidationError'
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  '/users/sessions/invalidate_all': {
+    post: {
+      tags: ['Sessions'],
+      description: 'Create user session',
+      operationId: 'createUserSession',
+      security: [{ BearerAuth: [] }],
+      parameters: [],
+      responses: {
+        200: {
+          description: 'All sessions invalidated'
+        },
+        401: {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/error'
+              },
+              example: {
+                message: 'Invalid token',
+                internal_code: 'authorization_error'
               }
             }
           }
