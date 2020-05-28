@@ -38,18 +38,18 @@ describe('POST /users/sessions/invalidate_all', () => {
     let user = {};
     let token = {};
     let now = {};
-    const originalNowFunction = Date.now;
+    let dateSpy = {};
 
     beforeAll(async () => {
       ({ user, token } = await authorizedUserWithToken());
       now = Date.now();
-      Date.now = jest.fn().mockReturnValue(now);
+      dateSpy = jest.spyOn(Date, 'now').mockReturnValue(now);
       invalidationResponse = await httpRequest(token);
     });
 
     afterAll(async () => {
+      dateSpy.mockRestore();
       await truncateDatabase();
-      Date.now = originalNowFunction;
     });
 
     test('Responds with 200 status code', () => expect(invalidationResponse.status).toBe(200));
