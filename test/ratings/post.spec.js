@@ -30,57 +30,65 @@ describe('POST /weets/:id/ratings', () => {
     let anotherToken = {};
     let weet = {};
     let ratedUser = {};
-    const weetNotFound = {};
-    const invalidParameters = {};
-    const firstRatingCreation = {};
-    const ratingFromAnotherUserCreation = {};
-    const sameScoreRatingCreation = {};
-    const differentScoreRatingCreation = {};
+    let weetNotFound = {};
+    let invalidParameters = {};
+    let firstRatingCreation = {};
+    let ratingFromAnotherUserCreation = {};
+    let sameScoreRatingCreation = {};
+    let differentScoreRatingCreation = {};
 
     const getRatingFromResponse = response => Rating.findByPk(response.body.id);
 
-    /* eslint-disable require-atomic-updates */
     beforeAll(async () => {
       ({ user: ratingUser, token } = await authorizedUserWithToken());
       ({ user: anotherRatingUser, token: anotherToken } = await authorizedUserWithToken());
       ratedUser = await createUser();
       weet = await createWeet({ userId: ratedUser.id });
 
-      weetNotFound.response = await httpRequest({ token, weetId: 100, body: { score } });
+      weetNotFound = { response: await httpRequest({ token, weetId: 100, body: { score } }) };
 
-      invalidParameters.response = await httpRequest({ token, weetId: weet.id, body: { score: 1231 } });
+      invalidParameters = { response: await httpRequest({ token, weetId: weet.id, body: { score: 1231 } }) };
 
-      firstRatingCreation.response = await httpRequest({ token, weetId: weet.id, body: { score } });
-      firstRatingCreation.ratedUserPoints = (await ratedUser.reload()).points;
-      firstRatingCreation.rating = await getRatingFromResponse(firstRatingCreation.response);
+      let response = {};
 
-      sameScoreRatingCreation.response = await httpRequest({ token, weetId: weet.id, body: { score } });
-      sameScoreRatingCreation.ratingsCount = await Rating.count();
-      sameScoreRatingCreation.rating = await getRatingFromResponse(sameScoreRatingCreation.response);
+      response = await httpRequest({ token, weetId: weet.id, body: { score } });
+      firstRatingCreation = {
+        response,
+        ratedUserPoints: (await ratedUser.reload()).points,
+        rating: await getRatingFromResponse(response)
+      };
 
-      differentScoreRatingCreation.response = await httpRequest({
+      response = await httpRequest({ token, weetId: weet.id, body: { score } });
+      sameScoreRatingCreation = {
+        response,
+        ratingsCount: await Rating.count(),
+        rating: await getRatingFromResponse(response)
+      };
+
+      response = await httpRequest({
         token,
         weetId: weet.id,
         body: { score: differentScore }
       });
-      differentScoreRatingCreation.ratingsCount = await Rating.count();
-      differentScoreRatingCreation.rating = await getRatingFromResponse(
-        differentScoreRatingCreation.response
-      );
-      differentScoreRatingCreation.ratedUserPoints = (await ratedUser.reload()).points;
+      differentScoreRatingCreation = {
+        response,
+        rating: await getRatingFromResponse(response),
+        ratingsCount: await Rating.count(),
+        ratedUserPoints: (await ratedUser.reload()).points
+      };
 
-      ratingFromAnotherUserCreation.response = await httpRequest({
+      response = await httpRequest({
         token: anotherToken,
         weetId: weet.id,
         body: { score: anotherScore }
       });
-      ratingFromAnotherUserCreation.rating = await getRatingFromResponse(
-        ratingFromAnotherUserCreation.response
-      );
-      ratingFromAnotherUserCreation.ratingsCount = await Rating.count();
-      ratingFromAnotherUserCreation.ratedUserPoints = (await ratedUser.reload()).points;
+      ratingFromAnotherUserCreation = {
+        response,
+        rating: await getRatingFromResponse(response),
+        ratingsCount: await Rating.count(),
+        ratedUserPoints: (await ratedUser.reload()).points
+      };
     });
-    /* eslint-enable require-atomic-updates */
     afterAll(() => truncateDatabase());
 
     describe('When the requested weet doesn´t exist', () => {
