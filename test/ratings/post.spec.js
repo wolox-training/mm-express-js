@@ -20,46 +20,84 @@ describe('POST /weets/:id/ratings', () => {
     weet_id: expect.any(Number)
   };
 
-  const reloadedUserPoints = user => user.reload().then(reloadedUser => reloadedUser.points);
-
   describe('With an user logged in', () => {
     const score = sample([-1, 1]);
+    const differentScore = -score;
+    const anotherScore = sample([-1, 1]);
     let ratingUser = {};
-    let ratedUser = {};
-    let weet = {};
     let token = {};
+    let anotherRatingUser = {};
+    let anotherToken = {};
+    let weet = {};
+    let ratedUser = {};
+    const weetNotFound = {};
+    const invalidParameters = {};
+    const firstRatingCreation = {};
+    const ratingFromAnotherUserCreation = {};
+    const sameScoreRatingCreation = {};
+    const differentScoreRatingCreation = {};
+
+    const getRatingFromResponse = response => Rating.findByPk(response.body.id);
+
+    /* eslint-disable require-atomic-updates */
+    beforeAll(async () => {
+      ({ user: ratingUser, token } = await authorizedUserWithToken());
+      ({ user: anotherRatingUser, token: anotherToken } = await authorizedUserWithToken());
+      ratedUser = await createUser();
+      weet = await createWeet({ userId: ratedUser.id });
+
+      weetNotFound.response = await httpRequest({ token, weetId: 100, body: { score } });
+
+      invalidParameters.response = await httpRequest({ token, weetId: weet.id, body: { score: 1231 } });
+
+      firstRatingCreation.response = await httpRequest({ token, weetId: weet.id, body: { score } });
+      firstRatingCreation.ratedUserPoints = (await ratedUser.reload()).points;
+      firstRatingCreation.rating = await getRatingFromResponse(firstRatingCreation.response);
+
+      sameScoreRatingCreation.response = await httpRequest({ token, weetId: weet.id, body: { score } });
+      sameScoreRatingCreation.ratingsCount = await Rating.count();
+      sameScoreRatingCreation.rating = await getRatingFromResponse(sameScoreRatingCreation.response);
+
+      differentScoreRatingCreation.response = await httpRequest({
+        token,
+        weetId: weet.id,
+        body: { score: differentScore }
+      });
+      differentScoreRatingCreation.ratingsCount = await Rating.count();
+      differentScoreRatingCreation.rating = await getRatingFromResponse(
+        differentScoreRatingCreation.response
+      );
+      differentScoreRatingCreation.ratedUserPoints = (await ratedUser.reload()).points;
+
+      ratingFromAnotherUserCreation.response = await httpRequest({
+        token: anotherToken,
+        weetId: weet.id,
+        body: { score: anotherScore }
+      });
+      ratingFromAnotherUserCreation.rating = await getRatingFromResponse(
+        ratingFromAnotherUserCreation.response
+      );
+      ratingFromAnotherUserCreation.ratingsCount = await Rating.count();
+      ratingFromAnotherUserCreation.ratedUserPoints = (await ratedUser.reload()).points;
+    });
+    /* eslint-enable require-atomic-updates */
+    afterAll(() => truncateDatabase());
 
     describe('When the requested weet doesn´t exist', () => {
-      beforeAll(async () => {
-        ({ user: ratingUser, token } = await authorizedUserWithToken());
-        ratedUser = await createUser();
-        createRatingResponse = await httpRequest({ token, weetId: 100, body: { score } });
-      });
-      afterAll(() => truncateDatabase());
-
-      test('Responds with 404 status code', () => expect(createRatingResponse.statusCode).toBe(404));
+      test('Responds with 404 status code', () => expect(weetNotFound.response.statusCode).toBe(404));
 
       test('Responds with the expected error code', () =>
-        expect(createRatingResponse.body.internal_code).toBe(WEET_NOT_FOUND_ERROR));
+        expect(weetNotFound.response.body.internal_code).toBe(WEET_NOT_FOUND_ERROR));
     });
 
     describe('When creating the first rating', () => {
-      beforeAll(async () => {
-        ({ user: ratingUser, token } = await authorizedUserWithToken());
-        ratedUser = await createUser();
-        weet = await createWeet({ userId: ratedUser.id });
-        createRatingResponse = await httpRequest({ token, weetId: weet.id, body: { score } });
-      });
-      afterAll(() => truncateDatabase());
-
-      test('Responds with 201 status code', () => expect(createRatingResponse.statusCode).toBe(201));
+      test('Responds with 201 status code', () => expect(firstRatingCreation.response.statusCode).toBe(201));
 
       test('Responds with the expected schema', () =>
-        expect(createRatingResponse.body).toMatchObject(responseSchema));
+        expect(firstRatingCreation.response.body).toMatchObject(responseSchema));
 
-      test('Creates the expected rating', async () => {
-        const rating = await Rating.findByPk(createRatingResponse.body.id);
-        expect(rating).toMatchObject({
+      test('Creates the expected rating', () => {
+        expect(firstRatingCreation.rating).toMatchObject({
           score,
           ratingUserId: ratingUser.id,
           weetId: weet.id
@@ -67,62 +105,42 @@ describe('POST /weets/:id/ratings', () => {
       });
 
       test('Modifies ratedUser points by the score', () =>
-        expect(reloadedUserPoints(ratedUser)).resolves.toBe(score));
+        expect(firstRatingCreation.ratedUserPoints).toBe(score));
     });
 
     describe('When there is a previous rating belonging to this user and weet', () => {
       describe('When new score is different than the old score', () => {
-        const newScore = -score;
-
-        beforeAll(async () => {
-          ({ user: ratingUser, token } = await authorizedUserWithToken());
-          ratedUser = await createUser();
-          weet = await createWeet({ userId: ratedUser.id });
-          await httpRequest({ token, weetId: weet.id, body: { score } });
-          createRatingResponse = await httpRequest({ token, weetId: weet.id, body: { score: newScore } });
-        });
-        afterAll(() => truncateDatabase());
-
-        test('Responds with 201 status code', () => expect(createRatingResponse.statusCode).toBe(201));
+        test('Responds with 201 status code', () =>
+          expect(differentScoreRatingCreation.response.statusCode).toBe(201));
 
         test('Responds with the expected schema', () =>
-          expect(createRatingResponse.body).toMatchObject(responseSchema));
+          expect(differentScoreRatingCreation.response.body).toMatchObject(responseSchema));
 
-        test('Doesn´t create a new rating', () => expect(Rating.count()).resolves.toBe(1));
+        test('Doesn´t create a new rating', () => expect(differentScoreRatingCreation.ratingsCount).toBe(1));
 
-        test('Updates rating fields', async () => {
-          const rating = await Rating.findByPk(createRatingResponse.body.id);
-          expect(rating).toMatchObject({
-            score: newScore,
+        test('Updates rating fields', () => {
+          expect(differentScoreRatingCreation.rating).toMatchObject({
+            score: differentScore,
             ratingUserId: ratingUser.id,
             weetId: weet.id
           });
         });
 
         test('Updates the ratedUser points', () =>
-          expect(reloadedUserPoints(ratedUser)).resolves.toBe(newScore));
+          expect(differentScoreRatingCreation.ratedUserPoints).toBe(differentScore));
       });
 
       describe('When new score is the same than the old score', () => {
-        beforeAll(async () => {
-          ({ user: ratingUser, token } = await authorizedUserWithToken());
-          ratedUser = await createUser();
-          weet = await createWeet({ userId: ratedUser.id });
-          await httpRequest({ token, weetId: weet.id, body: { score } });
-          createRatingResponse = await httpRequest({ token, weetId: weet.id, body: { score } });
-        });
-        afterAll(() => truncateDatabase());
-
-        test('Responds with 201 status code', () => expect(createRatingResponse.statusCode).toBe(201));
+        test('Responds with 201 status code', () =>
+          expect(sameScoreRatingCreation.response.statusCode).toBe(201));
 
         test('Responds with the expected schema', () =>
-          expect(createRatingResponse.body).toMatchObject(responseSchema));
+          expect(sameScoreRatingCreation.response.body).toMatchObject(responseSchema));
 
-        test('Doesn´t create a new rating', () => expect(Rating.count()).resolves.toBe(1));
+        test('Doesn´t create a new rating', () => expect(sameScoreRatingCreation.ratingsCount).toBe(1));
 
-        test('Updates rating fields', async () => {
-          const rating = await Rating.findByPk(createRatingResponse.body.id);
-          expect(rating).toMatchObject({
+        test('Updates rating fields', () => {
+          expect(sameScoreRatingCreation.rating).toMatchObject({
             score,
             ratingUserId: ratingUser.id,
             weetId: weet.id
@@ -131,34 +149,16 @@ describe('POST /weets/:id/ratings', () => {
       });
 
       describe('When a score is added to the same weet with an other user', () => {
-        const anotherScore = sample([-1, 1]);
-        let anotherRatingUser = {};
-        let anotherToken = {};
-
-        beforeAll(async () => {
-          ({ user: ratingUser, token } = await authorizedUserWithToken());
-          ({ user: anotherRatingUser, token: anotherToken } = await authorizedUserWithToken());
-          ratedUser = await createUser();
-          weet = await createWeet({ userId: ratedUser.id });
-          await httpRequest({ token, weetId: weet.id, body: { score } });
-          createRatingResponse = await httpRequest({
-            token: anotherToken,
-            weetId: weet.id,
-            body: { score: anotherScore }
-          });
-        });
-        afterAll(() => truncateDatabase());
-
-        test('Responds with 201 status code', () => expect(createRatingResponse.statusCode).toBe(201));
+        test('Responds with 201 status code', () =>
+          expect(ratingFromAnotherUserCreation.response.statusCode).toBe(201));
 
         test('Responds with the expected schema', () =>
-          expect(createRatingResponse.body).toMatchObject(responseSchema));
+          expect(ratingFromAnotherUserCreation.response.body).toMatchObject(responseSchema));
 
-        test('Creates a new rating', () => expect(Rating.count()).resolves.toBe(2));
+        test('Creates a new rating', () => expect(ratingFromAnotherUserCreation.ratingsCount).toBe(2));
 
-        test('Creates the expected rating', async () => {
-          const rating = await Rating.findByPk(createRatingResponse.body.id);
-          expect(rating).toMatchObject({
+        test('Creates the expected rating', () => {
+          expect(ratingFromAnotherUserCreation.rating).toMatchObject({
             score: anotherScore,
             ratingUserId: anotherRatingUser.id,
             weetId: weet.id
@@ -166,24 +166,14 @@ describe('POST /weets/:id/ratings', () => {
         });
 
         test('Updates ratedUser points with the expected value', () =>
-          expect(reloadedUserPoints(ratedUser)).resolves.toBe(score + anotherScore));
+          expect(ratingFromAnotherUserCreation.ratedUserPoints).toBe(differentScore + anotherScore));
       });
 
       describe('With invalid parameters', () => {
-        const body = { score: 1231 };
-
-        beforeAll(async () => {
-          ({ user: ratingUser, token } = await authorizedUserWithToken());
-          ratedUser = await createUser();
-          weet = await createWeet({ userId: ratedUser.id });
-          createRatingResponse = await httpRequest({ token, weetId: weet.id, body });
-        });
-        afterAll(() => truncateDatabase());
-
-        test('Responds with 422 status code', () => expect(createRatingResponse.statusCode).toBe(422));
+        test('Responds with 422 status code', () => expect(invalidParameters.response.statusCode).toBe(422));
 
         test('Responds with the expected error code', () =>
-          expect(createRatingResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
+          expect(invalidParameters.response.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
       });
     });
   });
