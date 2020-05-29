@@ -90,7 +90,7 @@ describe('POST /weets/:id/ratings', () => {
 
         test('Doesn´t create a new rating', () => expect(Rating.count()).resolves.toBe(1));
 
-        test('Creates the expected rating', async () => {
+        test('Updates rating fields', async () => {
           const rating = await Rating.findByPk(createRatingResponse.body.id);
           expect(rating).toMatchObject({
             score: newScore,
@@ -120,7 +120,7 @@ describe('POST /weets/:id/ratings', () => {
 
         test('Doesn´t create a new rating', () => expect(Rating.count()).resolves.toBe(1));
 
-        test('Updates the expected rating', async () => {
+        test('Updates rating fields', async () => {
           const rating = await Rating.findByPk(createRatingResponse.body.id);
           expect(rating).toMatchObject({
             score,
