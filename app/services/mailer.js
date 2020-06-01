@@ -24,16 +24,30 @@ const getTransporter = () => {
   return transporter;
 };
 
+const sendMailToUser = (user, { subject, text }) =>
+  getTransporter().sendMail({
+    from: mailer.from,
+    to: user.email,
+    subject,
+    text
+  });
+
 exports.sendWelcomeEmail = user => {
   info(`mailer.sendWelcomeEmail to user ${user.id}`);
-  return getTransporter()
-    .sendMail({
-      from: mailer.from,
-      to: user.email,
-      subject: 'Bienvendio a Weeter!',
-      text: `Hola ${user.firstName}. Tu cuenta ha sido creada correctamente en Weeter`
-    })
-    .catch(({ message }) => {
-      throw externalServiceError(`Error when sending welcome email to user ${user.id}. Error: ${message}`);
-    });
+  return sendMailToUser(user, {
+    subject: 'Bienvendio a Weeter!',
+    text: `Hola ${user.firstName}. Tu cuenta ha sido creada correctamente en Weeter`
+  }).catch(({ message }) => {
+    throw externalServiceError(`Error when sending welcome email to user ${user.id}. Error: ${message}`);
+  });
+};
+
+exports.sendCongratulatoryEmail = user => {
+  info(`mailer.sendCongratulatoryEmail to user ${user.id}`);
+  return sendMailToUser(user, {
+    subject: 'Felicitaciones por Weetear!',
+    text: `Hola ${user.firstName}. Tus weets están llegando a mucha gente. Ya acumulaste ${user.points}!!!`
+  }).catch(({ message }) => {
+    throw externalServiceError(`Error when sending congratulatory email to user ${user.id}: ${message}`);
+  });
 };
