@@ -1,7 +1,6 @@
-const request = require('supertest');
 const { sortBy } = require('lodash');
 
-const app = require('../../app');
+const { sendGetRequest } = require('../helpers/requests');
 const { createUser } = require('../factory/users_factory');
 const { createManyWeets } = require('../factory/weets_factory');
 const { showWeetSerializer } = require('../../app/serializers/weets');
@@ -9,12 +8,7 @@ const { tokenFromUser } = require('../helpers/authorized_user');
 const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR } = require('../../app/errors');
 
 describe('GET /users', () => {
-  const httpRequest = ({ query = {}, token } = {}) => {
-    const requestBuilder = request(app)
-      .get('/weets')
-      .query(query);
-    return token ? requestBuilder.set('Authorization', `Bearer ${token}`) : requestBuilder;
-  };
+  const httpRequest = ({ query = {}, token } = {}) => sendGetRequest({ path: '/weets', query, token });
   let weetsIndexResponse = {};
 
   describe('With an user loged in', () => {

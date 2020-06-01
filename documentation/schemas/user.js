@@ -19,6 +19,15 @@ module.exports = {
     type: 'password',
     example: 'PassWord_123'
   },
+  jobPosition: {
+    type: 'string',
+    enum: ['DEVELOPER', 'LEAD', 'TL', 'EM', 'HEAD', 'CEO'],
+    example: 'DEVELOPER'
+  },
+  userPoints: {
+    type: 'integer',
+    example: -2
+  },
   userCreationBody: {
     type: 'object',
     properties: {
@@ -51,6 +60,12 @@ module.exports = {
       },
       email: {
         $ref: '#/components/schemas/userEmail'
+      },
+      points: {
+        $ref: '#/components/schemas/userPoints'
+      },
+      job_position: {
+        $ref: '#/components/schemas/jobPosition'
       }
     }
   },

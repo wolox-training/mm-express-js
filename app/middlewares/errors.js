@@ -12,7 +12,8 @@ const statusCodes = {
   [errors.INVALID_LOGIN_ERROR]: 401,
   [errors.AUTHORIZATION_ERROR]: 401,
   [errors.WEET_LENGTH_EXCEEDED]: 502,
-  [errors.PERMISSIONS_ERROR]: 403
+  [errors.PERMISSIONS_ERROR]: 403,
+  [errors.WEET_NOT_FOUND_ERROR]: 404
 };
 
 exports.handle = (error, req, res, next) => {

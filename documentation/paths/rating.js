@@ -1,16 +1,16 @@
 module.exports = {
-  '/admin/users': {
+  '/weets/{weetId}/ratings': {
     post: {
-      tags: ['Users'],
-      description: 'Create admin user',
-      operationId: 'createAdminUser',
+      tags: ['Ratings'],
+      description: 'Create rating',
+      operationId: 'createRating',
       security: [{ BearerAuth: [] }],
-      parameters: [],
+      parameters: [{ in: 'path', name: 'weetId', schema: { $ref: '#/components/schemas/weetId' } }],
       requestBody: {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/components/schemas/userCreationBody'
+              $ref: '#/components/schemas/ratingCreationBody'
             }
           }
         },
@@ -18,11 +18,11 @@ module.exports = {
       },
       responses: {
         201: {
-          description: 'New admin user was created',
+          description: 'New rating was created',
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/rating'
               }
             }
           }
@@ -37,16 +37,16 @@ module.exports = {
             }
           }
         },
-        403: {
-          description: 'Forbidden',
+        404: {
+          description: 'Weet not found',
           content: {
             'application/json': {
               schema: {
                 $ref: '#/components/schemas/error'
               },
               example: {
-                message: 'You have not permission to access this resource',
-                internal_code: 'permisions_error'
+                message: 'Not found Weet with id: 14',
+                internal_code: 'resource_not_found_error'
               }
             }
           }

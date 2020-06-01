@@ -1,6 +1,4 @@
-const request = require('supertest');
-
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { hashPassword } = require('../../app/helpers/passwords');
 const { createUser } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, INVALID_LOGIN_ERROR } = require('../../app/errors');
@@ -8,10 +6,7 @@ const { decode } = require('../../app/helpers/jwt_utils');
 const { truncateDatabase } = require('../utils');
 
 describe('POST /users/sessions', () => {
-  const httpRequest = params =>
-    request(app)
-      .post('/users/sessions')
-      .send(params);
+  const httpRequest = body => sendPostRequest({ path: '/users/sessions', body });
   let sessionCreationResponse = {};
 
   describe('with an user created', () => {

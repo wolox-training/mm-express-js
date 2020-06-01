@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     { underscored: true, tableName: 'weets' }
   );
   Weet.associate = ({ User, Rating }) => {
-    Weet.belongsTo(User, { foreignKey: 'userId' });
+    Weet.belongsTo(User, { foreignKey: 'userId', as: 'user' });
     Weet.hasMany(Rating, { foreignKey: 'weetId' });
   };
   return Weet;

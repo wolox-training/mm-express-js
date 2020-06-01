@@ -1,7 +1,6 @@
-const request = require('supertest');
 const { sortBy } = require('lodash');
 
-const app = require('../../app');
+const { sendGetRequest } = require('../helpers/requests');
 const { createManyUsers } = require('../factory/users_factory');
 const { showUserSerializer } = require('../../app/serializers/users');
 const { tokenFromUser } = require('../helpers/authorized_user');
@@ -18,11 +17,7 @@ describe('GET /users', () => {
       token = tokenFromUser(users[0]);
     });
 
-    const httpRequest = (query = {}) =>
-      request(app)
-        .get('/users')
-        .set('Authorization', `Bearer ${token}`)
-        .query(query);
+    const httpRequest = (query = {}) => sendGetRequest({ path: '/users', token, query });
 
     describe('without query params', () => {
       beforeAll(async () => {
@@ -75,7 +70,7 @@ describe('GET /users', () => {
   describe('Without an user logged in', () => {
     let usersIndexResponse = {};
 
-    const httpRequest = () => request(app).get('/users');
+    const httpRequest = () => sendGetRequest({ path: '/users' });
 
     beforeAll(async () => {
       usersIndexResponse = await httpRequest();

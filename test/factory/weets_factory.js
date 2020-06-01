@@ -12,3 +12,6 @@ const buildDefaultAttrs = params => ({
 
 exports.createManyWeets = (count, defaultAttrs = {}, buildOptions = {}) =>
   factory.createMany(modelName, count, buildDefaultAttrs(defaultAttrs), buildOptions);
+
+exports.createWeet = (defaultAttrs = {}, buildOptions = {}) =>
+  factory.create(modelName, buildDefaultAttrs(defaultAttrs), buildOptions);

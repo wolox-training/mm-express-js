@@ -1,7 +1,6 @@
-const request = require('supertest');
 const chance = require('chance').Chance(); // eslint-disable-line new-cap
 
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { AUTHORIZATION_ERROR, EXTERNAL_SERVICE_ERROR, WEET_LENGTH_EXCEEDED } = require('../../app/errors');
 const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorized_user');
 const { truncateDatabase, truncateTable } = require('../utils');
@@ -12,10 +11,8 @@ const {
 } = require('../mocks/geek_jokes_responses');
 
 describe('POST /weets', () => {
-  const httpRequest = token => {
-    const requestBuilder = request(app).post('/weets');
-    return token ? requestBuilder.set('Authorization', `Bearer ${token}`) : requestBuilder;
-  };
+  const httpRequest = token => sendPostRequest({ path: '/weets', token });
+
   let weetCreationResponse = {};
 
   describe('Without an authenticated user', () => {
