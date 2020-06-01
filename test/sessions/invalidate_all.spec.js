@@ -1,15 +1,10 @@
-const request = require('supertest');
-
-const app = require('../../app');
+const { sendPostRequest } = require('../helpers/requests');
 const { AUTHORIZATION_ERROR } = require('../../app/errors');
 const { truncateDatabase } = require('../utils');
 const { tokenFromUser, authorizedUserWithToken } = require('../helpers/authorized_user');
 
 describe('POST /users/sessions/invalidate_all', () => {
-  const httpRequest = token => {
-    const requestBuilder = request(app).post('/users/sessions/invalidate_all');
-    return token ? requestBuilder.set('Authorization', `Bearer ${token}`) : requestBuilder;
-  };
+  const httpRequest = token => sendPostRequest({ path: '/users/sessions/invalidate_all', token });
   let invalidationResponse = {};
 
   describe('Without an user logged in', () => {
