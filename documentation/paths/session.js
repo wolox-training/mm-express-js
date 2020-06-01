@@ -2,7 +2,7 @@ module.exports = {
   '/users/sessions': {
     post: {
       tags: ['Sessions'],
-      description: 'Create user session',
+      description: 'Creates a session',
       operationId: 'createUserSession',
       parameters: [],
       requestBody: {
