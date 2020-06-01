@@ -44,7 +44,9 @@ exports.modifyUserPointsBy = (user, by, transaction) => {
   });
 };
 
-exports.invalidateUserSessions = user =>
-  user.update({ sessionsExpiredAt: Date.now() }).catch(error => {
+exports.invalidateUserSessions = user => {
+  info(`Calling users.invalidateUserSessions for user ${user.id}`);
+  return user.update({ sessionsExpiredAt: Date.now() }).catch(error => {
     throw databaseError(error.message);
   });
+};

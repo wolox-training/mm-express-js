@@ -7,7 +7,7 @@ exports.validateUserEmailUniqueness = (req, res, next) =>
     .catch(next);
 
 const isExpiredToken = (jwtPayload, user) =>
-  user.sessionsExpiredAt && jwtPayload.iss <= user.sessionsExpiredAt;
+  user.sessionsExpiredAt && jwtPayload.iat <= user.sessionsExpiredAt;
 
 exports.setCurrentUser = (req, res, next) =>
   findUserByEmail(req.jwtPayload.sub)
