@@ -33,7 +33,7 @@ exports.sendWelcomeEmail = user => {
       subject: 'Bienvendio a Weeter!',
       text: `Hola ${user.firstName}. Tu cuenta ha sido creada correctamente en Weeter`
     })
-    .catch(() => {
-      throw externalServiceError(`Error when sending welcome email to user ${user.id}`);
+    .catch(({ message }) => {
+      throw externalServiceError(`Error when sending welcome email to user ${user.id}. Error: ${message}`);
     });
 };
