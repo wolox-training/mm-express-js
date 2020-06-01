@@ -9,7 +9,7 @@ const sendCongratulationMailToUser = user => {
 
 module.exports = async () => {
   info('Starting congrats mails job');
-  const batchSize = 50;
+  const batchSize = 500;
   const mailsSent = [];
   for (
     let offset = 0, users = await findAllUsers({ offset, limit: batchSize });
