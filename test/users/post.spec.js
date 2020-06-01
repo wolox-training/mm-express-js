@@ -1,11 +1,10 @@
-const nodemailer = require('nodemailer');
-
 const { sendPostRequest } = require('../helpers/requests');
 const { createUser, buildUserJson } = require('../factory/users_factory');
 const { FIELD_VALIDATION_ERROR, USER_EMAIL_REPEATED_ERROR } = require('../../app/errors');
 const { User } = require('../../app/models');
 const { truncateDatabase } = require('../utils');
 const { showUserSerializer } = require('../../app/serializers/users');
+const { mockMailSending } = require('../mocks/mailer');
 
 describe('POST /users', () => {
   const httpRequest = body => sendPostRequest({ path: '/users', body });
@@ -13,9 +12,7 @@ describe('POST /users', () => {
   let sendMailMock = {};
 
   beforeAll(() => {
-    jest.mock('nodemailer');
-    sendMailMock = jest.fn().mockResolvedValue({});
-    nodemailer.createTransport = jest.fn().mockReturnValue({ sendMail: sendMailMock });
+    sendMailMock = mockMailSending();
   });
 
   describe('when params are OK', () => {
