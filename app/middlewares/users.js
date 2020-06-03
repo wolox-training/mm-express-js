@@ -6,18 +6,16 @@ exports.validateUserEmailUniqueness = (req, res, next) =>
     .then(user => (user ? next(userEmailRepeatedError('E-mail already in use')) : next()))
     .catch(next);
 
-const isExpiredToken = (jwtPayload, user) =>
-  user.sessionsExpiredAt && jwtPayload.iat <= user.sessionsExpiredAt;
-
-exports.setCurrentUser = (req, res, next) =>
+exports.setCurrentUser = (req, res, next) => {
+  console.log(req.jwtPayload);
   findUserByEmail(req.jwtPayload.sub)
     .then(user => {
       if (!user) return next(authorizationError('Not a valid user'));
-      if (isExpiredToken(req.jwtPayload, user)) return next(authorizationError('Expired token'));
       req.currentUser = user;
       return next();
     })
     .catch(next);
+};
 
 exports.setUserByEmail = (req, res, next) =>
   findUserByEmail(req.body.email)

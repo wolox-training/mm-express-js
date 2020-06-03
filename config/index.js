@@ -54,6 +54,11 @@ const config = {
       host: process.env.MAILER_HOST,
       port: process.env.MAILER_PORT,
       from: process.env.MAILER_FROM_EMAIL
+    },
+    auth0: {
+      domain: process.env.AUTH0_DOMAIN,
+      clientId: process.env.AUTH0_CLIENT_ID,
+      audience: process.env.AUTH0_AUDIENCE
     }
   }
 };
