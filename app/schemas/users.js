@@ -1,8 +1,3 @@
-exports.passwordSchema = {
-  errorMessage: 'password must have at least 7 characters',
-  isLength: { options: { min: 7 } }
-};
-
 const woloxMailRegexp = /.*@wolox(\.com\.ar|\.co|\.cl)$/;
 
 exports.emailSchema = {
@@ -22,6 +17,9 @@ exports.userCreationSchema = {
     errorMessage: 'last_name must be present',
     isEmpty: { negated: true }
   },
-  password: exports.passwordSchema,
+  external_id: {
+    errorMessage: 'external_id must be present',
+    isEmpty: { negated: true }
+  },
   email: exports.emailSchema
 };

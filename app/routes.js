@@ -14,7 +14,10 @@ const { paginationParamsSchema } = require('./schemas/pagination_params');
 exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/users', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], usersIndex);
+
+  // Called from Auth0 webhook
   app.post('/users', [schemaValidation(userCreationSchema), validateUserEmailUniqueness], createUser);
+
   app.post(
     '/users/sessions',
     [schemaValidation(sessionsCreationSchema), verifyUserPresence],

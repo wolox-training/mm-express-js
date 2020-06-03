@@ -3,19 +3,14 @@ const { sendWelcomeEmail } = require('../services/mailer');
 const { creationParamsMapper } = require('../mappers/users');
 const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
-const { hashPassword } = require('../helpers/passwords');
-const logger = require('../logger');
 
-exports.createUser = (req, res, next) => {
-  const userBody = creationParamsMapper(req.body);
-  return hashPassword(userBody.password)
-    .then(password => createUser({ ...userBody, password }))
+exports.createUser = (req, res, next) =>
+  createUser(creationParamsMapper(req.body))
     .then(user => {
       res.status(201).send(showUserSerializer(user));
-      sendWelcomeEmail(user).catch(logger.error);
+      sendWelcomeEmail(user);
     })
     .catch(next);
-};
 
 exports.createAdminUser = (req, res, next) =>
   (req.body.user
