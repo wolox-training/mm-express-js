@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: '0'
+      },
+      sessionsExpiredAt: {
+        type: DataTypes.DATE,
+        allowNull: true
       }
     },
     { underscored: true, tableName: 'users' }

@@ -13,7 +13,8 @@ const buildDefaultAttrs = params => ({
   ...params,
   email: params.email || generateEmail(),
   password: params.password || factory.chance('string', { length: 10 }),
-  points: Number(params.points) || 0
+  points: Number(params.points) || 0,
+  sessionsExpiredAt: params.sessionsExpiredAt || null
 });
 
 exports.createUser = (defaultAttrs = {}, buildOptions = {}) =>

@@ -8,7 +8,7 @@ const logger = require('../logger');
 
 exports.createUser = (req, res, next) => {
   const userBody = creationParamsMapper(req.body);
-  hashPassword(userBody.password)
+  return hashPassword(userBody.password)
     .then(password => createUser({ ...userBody, password }))
     .then(user => {
       res.status(201).send(showUserSerializer(user));
@@ -16,6 +16,7 @@ exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
+
 exports.createAdminUser = (req, res, next) =>
   (req.body.user
     ? upgradeUserToAdmin(req.body.user)

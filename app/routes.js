@@ -1,5 +1,5 @@
 const { healthCheck } = require('./controllers/healthCheck');
-const { createUserSession } = require('./controllers/sessions');
+const { createUserSession, invalidateAllUserSessions } = require('./controllers/sessions');
 const { createUser, usersIndex, createAdminUser } = require('./controllers/users');
 const { createWeet, weetsIndex } = require('./controllers/weets');
 const { createRating } = require('./controllers/ratings');
@@ -20,6 +20,7 @@ exports.init = app => {
     [schemaValidation(sessionsCreationSchema), verifyUserPresence],
     createUserSession
   );
+  app.post('/users/sessions/invalidate_all', [verifyJwt, setCurrentUser], invalidateAllUserSessions);
   app.post('/weets', [verifyJwt, setCurrentUser], createWeet);
   app.get('/weets', [schemaValidation(paginationParamsSchema), verifyJwt, setCurrentUser], weetsIndex);
   app.post('/weets/:id/ratings', [schemaValidation(ratingSchema), verifyJwt, setCurrentUser], createRating);
