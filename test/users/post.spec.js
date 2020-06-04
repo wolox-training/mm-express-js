@@ -4,17 +4,26 @@ const { FIELD_VALIDATION_ERROR, USER_EMAIL_REPEATED_ERROR } = require('../../app
 const { User } = require('../../app/models');
 const { truncateDatabase } = require('../utils');
 const { showUserSerializer } = require('../../app/serializers/users');
+const { mockMailSending } = require('../mocks/mailer');
 
 describe('POST /users', () => {
   const httpRequest = body => sendPostRequest({ path: '/users', body });
   let userCreationResponse = {};
+  let sendMailMock = {};
+
+  beforeAll(() => {
+    sendMailMock = mockMailSending();
+  });
 
   describe('when params are OK', () => {
     const userParams = buildUserJson();
     beforeAll(async () => {
       userCreationResponse = await httpRequest(await userParams);
     });
-    afterAll(() => truncateDatabase());
+    afterAll(async () => {
+      await truncateDatabase();
+      sendMailMock.mockReset();
+    });
     const dataToCheck = user => ({
       first_name: user.first_name,
       last_name: user.last_name,
@@ -39,13 +48,18 @@ describe('POST /users', () => {
       const createdUser = await User.findByPk(userCreationResponse.body.id);
       expect(showUserSerializer(createdUser)).toMatchObject(userCreationResponse.body);
     });
+
+    test('Sends a welcome email', () => expect(sendMailMock).toHaveBeenCalled());
   });
 
   describe('when password doesn´t satisfy minimun length', () => {
     beforeAll(async () => {
       userCreationResponse = await httpRequest(await buildUserJson({ password: 'short' }));
     });
-    afterAll(() => truncateDatabase());
+    afterAll(async () => {
+      await truncateDatabase();
+      sendMailMock.mockReset();
+    });
 
     test('Responds with 422 status code', () => expect(userCreationResponse.statusCode).toBe(422));
 
@@ -53,13 +67,18 @@ describe('POST /users', () => {
       expect(userCreationResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
 
     test('Does not create a new user', () => expect(User.count()).resolves.toBe(0));
+
+    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
   });
 
   describe('without mandatory parameters', () => {
     beforeAll(async () => {
       userCreationResponse = await httpRequest({});
     });
-    afterAll(() => truncateDatabase());
+    afterAll(async () => {
+      await truncateDatabase();
+      sendMailMock.mockReset();
+    });
 
     test('Responds with 422 status code', () => expect(userCreationResponse.statusCode).toBe(422));
 
@@ -67,6 +86,8 @@ describe('POST /users', () => {
       expect(userCreationResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
 
     test('Does not create a new user', () => expect(User.count()).resolves.toBe(0));
+
+    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
   });
 
   describe('when email is already used', () => {
@@ -76,7 +97,10 @@ describe('POST /users', () => {
       await createUser({ email });
       userCreationResponse = await httpRequest(await userParams);
     });
-    afterAll(() => truncateDatabase());
+    afterAll(async () => {
+      await truncateDatabase();
+      sendMailMock.mockReset();
+    });
 
     test('Responds with 422 status code', () => expect(userCreationResponse.statusCode).toBe(422));
 
@@ -84,5 +108,7 @@ describe('POST /users', () => {
       expect(userCreationResponse.body.internal_code).toBe(USER_EMAIL_REPEATED_ERROR));
 
     test('Does not create a new user', () => expect(User.count()).resolves.toBe(1));
+
+    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
   });
 });
