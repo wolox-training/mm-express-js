@@ -1,4 +1,9 @@
-const { User } = require('../models');
+const {
+  Weet,
+  User,
+  Sequelize: { Op },
+  sequelize
+} = require('../models');
 const { databaseError } = require('../errors');
 const { info } = require('../logger');
 
@@ -48,5 +53,35 @@ exports.modifyUserPointsBy = (user, by, transaction) => {
   info(`Calling users.modifyUserPointsBy: userId=${user.id}, by=${by}`);
   return user.increment('points', { by, transaction }).catch(error => {
     throw databaseError(error.message);
+  });
+};
+
+exports.wordsCountByUser = ({ startingDate, limit }) => {
+  info(`Calling weets.wordsCountByUser with startingDate=${startingDate}`);
+  return Weet.findAll({
+    where: {
+      createdAt: {
+        [Op.gte]: startingDate
+      }
+    },
+    attributes: [
+      [
+        sequelize.fn(
+          'sum',
+          sequelize.fn(
+            'array_length',
+            sequelize.fn('regexp_split_to_array', sequelize.col('content'), sequelize.literal("E'\\\\s+'")),
+            1
+          )
+        ),
+        'totalWordsCount'
+      ]
+    ],
+    include: { model: User, as: 'user', required: true },
+    group: ['user.id'],
+    order: [[sequelize.literal('"totalWordsCount"'), 'DESC']],
+    limit
+  }).catch(({ message }) => {
+    throw databaseError(message);
   });
 };

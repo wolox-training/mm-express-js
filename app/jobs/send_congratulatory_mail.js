@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const { info, error: logError } = require('../logger');
-const { wordsCountByUser } = require('../services/weets');
+const { wordsCountByUser } = require('../services/users');
 const { sendCongratulatoryEmail } = require('../services/mailer');
 
 const sendCongratulationMailToUser = (user, wordsCount) => {
