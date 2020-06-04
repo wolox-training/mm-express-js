@@ -56,8 +56,8 @@ module.exports = {
   '/users/sessions/invalidate_all': {
     post: {
       tags: ['Sessions'],
-      description: 'Create user session',
-      operationId: 'createUserSession',
+      description: 'Invalidates all user sessions',
+      operationId: 'invalidateAllSessions',
       security: [{ BearerAuth: [] }],
       parameters: [],
       responses: {
