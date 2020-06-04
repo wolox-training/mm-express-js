@@ -1,23 +1,23 @@
+const moment = require('moment');
+
 const { info, error: logError } = require('../logger');
-const { findAllUsers } = require('../services/users');
+const { wordsCountByUser } = require('../services/weets');
 const { sendCongratulatoryEmail } = require('../services/mailer');
 
-const sendCongratulationMailToUser = user => {
+const sendCongratulationMailToUser = (user, wordsCount) => {
   info(`Sending mail to ${user.email}`);
-  return sendCongratulatoryEmail(user).catch(logError);
+  return sendCongratulatoryEmail(user, wordsCount).catch(logError);
 };
 
 module.exports = async () => {
   info('Starting congrats mails job');
-  const batchSize = 500;
-  const mailsSent = [];
-  for (
-    let offset = 0, users = await findAllUsers({ offset, limit: batchSize });
-    users.length > 0;
-    offset += batchSize, users = await findAllUsers({ offset, limit: batchSize })
-  ) {
-    mailsSent.push(...users.map(sendCongratulationMailToUser));
-  }
+  const limit = 10;
+  const startingDate = moment().subtract(1, 'days');
+  const rows = await wordsCountByUser({ limit, startingDate });
+  const mailsSent = rows.map(({ dataValues: { user, totalWordsCount } }) =>
+    sendCongratulationMailToUser(user, totalWordsCount)
+  );
+
   await Promise.allSettled(mailsSent);
   info('Finished congrats mails job');
 };

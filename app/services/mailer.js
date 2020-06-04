@@ -42,11 +42,13 @@ exports.sendWelcomeEmail = user => {
   });
 };
 
-exports.sendCongratulatoryEmail = user => {
+exports.sendCongratulatoryEmail = (user, wordsCount) => {
   info(`mailer.sendCongratulatoryEmail to user ${user.id}`);
   return sendMailToUser(user, {
     subject: 'Felicitaciones por Weetear!',
-    text: `Hola ${user.firstName}. Tus weets están llegando a mucha gente. Ya acumulaste ${user.points}!!!`
+    text: `Hola ${user.firstName}. Tus weets están llegando a mucha gente.
+    Hoy weeteaste ${wordsCount} palabras y ya acumulaste ${user.points} puntos!!!
+    `
   }).catch(({ message }) => {
     throw externalServiceError(`Error when sending congratulatory email to user ${user.id}: ${message}`);
   });
