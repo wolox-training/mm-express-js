@@ -2,13 +2,9 @@ const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 
 const { findUserByEmail } = require('../services/users');
-const { invalidLoginError, authorizationError, permisionsError } = require('../errors');
-const { decode } = require('../helpers/jwt_utils');
+const { invalidLoginError, permisionsError } = require('../errors');
 const {
-  common: {
-    session: { header_name },
-    auth0
-  }
+  common: { auth0 }
 } = require('../../config');
 
 exports.verifyUserPresence = (req, res, next) =>
@@ -20,7 +16,7 @@ exports.verifyUserPresence = (req, res, next) =>
     })
     .catch(next);
 
-const checkJwt = jwt({
+exports.verifyJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,
     rateLimit: true,
@@ -32,19 +28,6 @@ const checkJwt = jwt({
   issuer: `https://${auth0.domain}/`,
   algorithm: ['RS256']
 });
-
-exports.verifyJwt = checkJwt;
-
-// exports.verifyJwt = (req, res, next) => {
-//   const token = req.headers[header_name] && req.headers[header_name].split(/\s+/)[1];
-//   if (!token) return next(authorizationError('You need to be logged in'));
-//   try {
-//     req.jwtPayload = decode(token);
-//     return next();
-//   } catch {
-//     return next(authorizationError('Invalid credentials'));
-//   }
-// };
 
 const namespace = 'http://weets.com';
 const roleField = `${namespace}/role`;
