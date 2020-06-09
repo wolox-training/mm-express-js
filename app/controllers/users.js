@@ -1,3 +1,4 @@
+const { error: logError } = require('../logger');
 const { createUser, findAndCountAllUsers, upgradeUserToAdmin } = require('../services/users');
 const { sendWelcomeEmail } = require('../services/mailer');
 const { creationParamsMapper } = require('../mappers/users');
@@ -8,7 +9,7 @@ exports.createUser = (req, res, next) =>
   createUser(creationParamsMapper(req.body))
     .then(user => {
       res.status(201).send(showUserSerializer(user));
-      sendWelcomeEmail(user);
+      sendWelcomeEmail(user).catch(logError);
     })
     .catch(next);
 
