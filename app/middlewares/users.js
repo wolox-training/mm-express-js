@@ -7,7 +7,6 @@ exports.validateUserEmailUniqueness = (req, res, next) =>
     .catch(next);
 
 exports.setCurrentUser = (req, res, next) => {
-  console.log(req.jwtPayload);
   findUserByEmail(req.jwtPayload.sub)
     .then(user => {
       if (!user) return next(authorizationError('Not a valid user'));
