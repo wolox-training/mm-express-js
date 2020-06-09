@@ -21,13 +21,6 @@ exports.findUserByEmail = email => {
   });
 };
 
-exports.findAllUsers = ({ offset, limit }) => {
-  info(`Calling users.findAllUsers offset=${offset}, limit=${limit}`);
-  return User.findAll({ offset, limit, order: [['id', 'asc']] }).catch(error => {
-    throw databaseError(error.message);
-  });
-};
-
 exports.findAndCountAllUsers = ({ offset, limit }) => {
   info('Calling users.findAndCountAllUsers');
   return User.findAndCountAll({ offset, limit, order: [['id', 'asc']] }).catch(error => {

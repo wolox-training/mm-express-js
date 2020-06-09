@@ -9,15 +9,21 @@ const sendCongratulationMailToUser = (user, wordsCount) => {
   return sendCongratulatoryEmail(user, wordsCount).catch(logError);
 };
 
-module.exports = async () => {
+module.exports = () => {
   info('Starting congrats mails job');
   const limit = 10;
   const startingDate = moment().subtract(1, 'days');
-  const rows = await wordsCountByUser({ limit, startingDate });
-  const mailsSent = rows.map(({ dataValues: { user, totalWordsCount } }) =>
-    sendCongratulationMailToUser(user, totalWordsCount)
-  );
-
-  await Promise.allSettled(mailsSent);
-  info('Finished congrats mails job');
+  return wordsCountByUser({ limit, startingDate })
+    .then(rows =>
+      rows.map(({ dataValues: { user, totalWordsCount } }) =>
+        sendCongratulationMailToUser(user, totalWordsCount)
+      )
+    )
+    .then(Promise.allSettled)
+    .then(() => {
+      info('Finished congrats mails job');
+    })
+    .catch(() => {
+      logError('Error when running congrats mails jobs');
+    });
 };
