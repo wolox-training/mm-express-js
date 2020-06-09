@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       // id used on Auth0
       externalId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       firstName: {
         type: DataTypes.STRING,

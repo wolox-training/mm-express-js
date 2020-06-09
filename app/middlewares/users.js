@@ -1,4 +1,4 @@
-const { findUserByEmail } = require('../services/users');
+const { findUserByEmail, findUserByExternalId } = require('../services/users');
 const { userEmailRepeatedError, authorizationError } = require('../errors');
 
 exports.validateUserEmailUniqueness = (req, res, next) =>
@@ -7,7 +7,7 @@ exports.validateUserEmailUniqueness = (req, res, next) =>
     .catch(next);
 
 exports.setCurrentUser = (req, res, next) => {
-  findUserByEmail(req.jwtPayload.sub)
+  findUserByExternalId(req.jwtPayload.sub)
     .then(user => {
       if (!user) return next(authorizationError('Not a valid user'));
       req.currentUser = user;

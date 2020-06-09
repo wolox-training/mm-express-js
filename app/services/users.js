@@ -16,6 +16,13 @@ exports.findUserByEmail = email => {
   });
 };
 
+exports.findUserByExternalId = externalId => {
+  info(`Calling users.findUserByExternalId externalId=${externalId}`);
+  return User.findOne({ where: { externalId } }).catch(error => {
+    throw databaseError(error.message);
+  });
+};
+
 exports.findAndCountAllUsers = ({ offset, limit }) => {
   info('Calling users.findAndCountAllUsers');
   return User.findAndCountAll({ offset, limit, order: [['id', 'asc']] }).catch(error => {
