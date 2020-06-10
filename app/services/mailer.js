@@ -35,7 +35,7 @@ const sendMailToUser = (user, { subject, text }) =>
 exports.sendWelcomeEmail = user => {
   info(`mailer.sendWelcomeEmail to user ${user.id}`);
   return sendMailToUser(user, {
-    subject: 'Bienvendio a Weeter!',
+    subject: 'Bienvenido a Weeter!',
     text: `Hola ${user.firstName}. Tu cuenta ha sido creada correctamente en Weeter`
   }).catch(({ message }) => {
     throw externalServiceError(`Error when sending welcome email to user ${user.id}. Error: ${message}`);
