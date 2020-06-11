@@ -7,7 +7,7 @@ const { createUser } = require('../factory/users_factory');
 
 exports.authorizedUserWithToken = async ({ userParams, jwksMock }) => {
   const user = await createUser(userParams);
-  return { user, token: this.tokenFromUser(user, jwksMock) };
+  return { user, token: exports.tokenFromUser(user, jwksMock) };
 };
 
 exports.tokenFromUser = (user, jwksMock) =>

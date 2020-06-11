@@ -11,7 +11,7 @@ const {
   mockGeekJokesSuccessResponse
 } = require('../mocks/geek_jokes_responses');
 
-describe.skip('POST /weets', () => {
+describe('POST /weets', () => {
   const httpRequest = token => sendPostRequest({ path: '/weets', token });
 
   let weetCreationResponse = {};

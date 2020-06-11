@@ -8,7 +8,7 @@ const { showWeetSerializer } = require('../../app/serializers/weets');
 const { tokenFromUser } = require('../helpers/authorized_user');
 const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR } = require('../../app/errors');
 
-describe.skip('GET /users', () => {
+describe('GET /users', () => {
   const httpRequest = ({ query = {}, token } = {}) => sendGetRequest({ path: '/weets', query, token });
   let weetsIndexResponse = {};
   let jwksMock = {};

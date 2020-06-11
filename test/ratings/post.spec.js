@@ -9,7 +9,7 @@ const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR, WEET_NOT_FOUND_ERROR } = re
 const { truncateDatabase } = require('../utils');
 const { authorizedUserWithToken, tokenFromUser } = require('../helpers/authorized_user');
 
-describe.skip('POST /weets/:id/ratings', () => {
+describe('POST /weets/:id/ratings', () => {
   let createRatingResponse = {};
   const httpRequest = ({ token, weetId, body } = {}) =>
     sendPostRequest({ path: `/weets/${weetId}/ratings`, token, body });
