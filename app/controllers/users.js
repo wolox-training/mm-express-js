@@ -1,15 +1,15 @@
-const { error: logError } = require('../logger');
 const { createUser, findAndCountAllUsers, upgradeUserToAdmin } = require('../services/users');
 const { sendWelcomeEmail } = require('../services/mailer');
 const { creationParamsMapper } = require('../mappers/users');
 const { paginationParamsMapper } = require('../mappers/pagination_params');
 const { showUserSerializer, usersPageSerializer } = require('../serializers/users');
+const logger = require('../logger');
 
 exports.createUser = (req, res, next) =>
   createUser(creationParamsMapper(req.body))
     .then(user => {
       res.status(201).send(showUserSerializer(user));
-      sendWelcomeEmail(user).catch(logError);
+      sendWelcomeEmail(user).catch(logger.error);
     })
     .catch(next);
 
