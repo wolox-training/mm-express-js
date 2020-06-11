@@ -1,5 +1,6 @@
 const { sortBy } = require('lodash');
 
+const { mockJwks } = require('../mocks/jwks');
 const { sendGetRequest } = require('../helpers/requests');
 const { createManyUsers } = require('../factory/users_factory');
 const { showUserSerializer } = require('../../app/serializers/users');
@@ -7,6 +8,15 @@ const { tokenFromUser } = require('../helpers/authorized_user');
 const { AUTHORIZATION_ERROR, FIELD_VALIDATION_ERROR } = require('../../app/errors');
 
 describe('GET /users', () => {
+  let jwksMock = {};
+
+  beforeAll(() => {
+    jwksMock = mockJwks();
+    jwksMock.start();
+  });
+
+  afterAll(() => jwksMock.stop());
+
   describe('With an user loged in', () => {
     let usersIndexResponse = {};
     let users = {};
@@ -14,7 +24,7 @@ describe('GET /users', () => {
 
     beforeAll(async () => {
       users = sortBy(await createManyUsers(2), 'id');
-      token = tokenFromUser(users[0]);
+      token = tokenFromUser(users[0], jwksMock);
     });
 
     const httpRequest = (query = {}) => sendGetRequest({ path: '/users', token, query });

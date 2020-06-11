@@ -34,6 +34,7 @@ if (!config.isTesting) app.use(expressMiddleware({ loggerFn: logger.info }));
 
 routes.init(app);
 
+app.use(errors.jwtErrors);
 app.use(errors.handle);
 
 module.exports = app;

@@ -6,7 +6,7 @@ const { User } = require('../../app/models');
 const { showUserSerializer } = require('../../app/serializers/users');
 const { truncateDatabase } = require('../utils');
 
-describe('POST /users', () => {
+describe.skip('POST /users', () => {
   let userCreationResponse = {};
 
   const httpRequest = (body, token) => sendPostRequest({ path: '/admin/users', token, body });

@@ -52,25 +52,6 @@ describe('POST /users', () => {
     test('Sends a welcome email', () => expect(sendMailMock).toHaveBeenCalled());
   });
 
-  describe('when password doesn´t satisfy minimun length', () => {
-    beforeAll(async () => {
-      userCreationResponse = await httpRequest(await buildUserJson({ password: 'short' }));
-    });
-    afterAll(async () => {
-      await truncateDatabase();
-      sendMailMock.mockReset();
-    });
-
-    test('Responds with 422 status code', () => expect(userCreationResponse.statusCode).toBe(422));
-
-    test('Responds with the expected error code', () =>
-      expect(userCreationResponse.body.internal_code).toBe(FIELD_VALIDATION_ERROR));
-
-    test('Does not create a new user', () => expect(User.count()).resolves.toBe(0));
-
-    test('Does not send a welcome email', () => expect(sendMailMock).not.toHaveBeenCalled());
-  });
-
   describe('without mandatory parameters', () => {
     beforeAll(async () => {
       userCreationResponse = await httpRequest({});

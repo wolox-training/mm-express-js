@@ -16,6 +16,9 @@ const statusCodes = {
   [errors.WEET_NOT_FOUND_ERROR]: 404
 };
 
+exports.jwtErrors = (err, req, res, next) =>
+  err.name === 'UnauthorizedError' ? next(errors.authorizationError('Invalid jwt')) : next(err);
+
 exports.handle = (error, req, res, next) => {
   if (error.internalCode) res.status(statusCodes[error.internalCode] || DEFAULT_STATUS_CODE);
   else {

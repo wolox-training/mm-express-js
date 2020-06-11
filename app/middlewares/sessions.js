@@ -29,8 +29,7 @@ exports.verifyJwt = jwt({
   algorithm: ['RS256']
 });
 
-const namespace = 'http://weets.com';
-const roleField = `${namespace}/role`;
+const roleField = `${auth0.roleNamespace}/role`;
 
 exports.verifyAdmin = (req, res, next) =>
   req.jwtPayload[roleField] === 'admin'

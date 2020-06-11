@@ -58,7 +58,8 @@ const config = {
     auth0: {
       domain: process.env.AUTH0_DOMAIN,
       clientId: process.env.AUTH0_CLIENT_ID,
-      audience: process.env.AUTH0_AUDIENCE
+      audience: process.env.AUTH0_AUDIENCE,
+      roleNamespace: process.env.AUTH0_ROLE_NAMESPACE
     }
   }
 };
