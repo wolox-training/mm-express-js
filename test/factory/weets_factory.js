@@ -15,3 +15,8 @@ exports.createManyWeets = (count, defaultAttrs = {}, buildOptions = {}) =>
 
 exports.createWeet = (defaultAttrs = {}, buildOptions = {}) =>
   factory.create(modelName, buildDefaultAttrs(defaultAttrs), buildOptions);
+
+exports.createWeetWithWordsCount = ({ userId, wordsCount }) => {
+  const content = factory.chance('sentence', { words: wordsCount });
+  return exports.createWeet({ content, userId });
+};
